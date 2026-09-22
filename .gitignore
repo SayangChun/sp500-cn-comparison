@@ -1,0 +1,15 @@
+# 定期报告 PDF 与抽取文本体积较大，可由 scripts/fetch_reports.py 重新下载
+data/pdf/
+data/txt/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

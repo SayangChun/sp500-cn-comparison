@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中国标普500标的横向对比 · 2026中报穿透分析</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1a1d21; --ink2:#4a5058; --ink3:#7c848e;
+  --line:#e3e6ea; --line2:#eef1f4;
+  --blue:#2563eb; --blue-bg:#eff4ff;
+  --green:#0d9488; --green-bg:#e9f7f5;
+  --amber:#b45309; --amber-bg:#fdf5e6;
+  --red:#c0392b; --red-bg:#fdf0ee;
+  --violet:#6d28d9; --violet-bg:#f4f0ff;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:14px;line-height:1.65;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 22px 80px}
+h1{font-size:27px;line-height:1.35;margin:0 0 10px;letter-spacing:-.2px}
+h2{font-size:19px;margin:44px 0 6px;letter-spacing:-.1px}
+h2 .num{color:var(--ink3);font-weight:600;margin-right:8px;font-variant-numeric:tabular-nums}
+h3{font-size:15px;margin:26px 0 8px}
+p{margin:9px 0;color:var(--ink2)}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+code{background:#eef1f4;padding:1px 5px;border-radius:4px;font-size:12.5px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.sub{color:var(--ink3);font-size:13.5px;margin:0 0 4px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 28px;margin-bottom:22px}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.tag{background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:500}
+.tag.g{background:var(--green-bg);color:var(--green)}
+.tag.a{background:var(--amber-bg);color:var(--amber)}
+.tag.v{background:var(--violet-bg);color:var(--violet)}
+.lede{font-size:15.5px;color:var(--ink);border-left:3px solid var(--blue);padding-left:14px;margin:16px 0 4px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:12px;margin:18px 0 6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px}
+.card .k{font-size:12.5px;color:var(--ink3);margin-bottom:5px}
+.card .v{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.card .d{font-size:12.5px;color:var(--ink3);margin-top:5px;line-height:1.5}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:26px 0 0;border-bottom:1px solid var(--line)}
+.tab{padding:9px 15px;border:none;background:none;cursor:pointer;font-size:13.5px;color:var(--ink3);
+  border-bottom:2px solid transparent;font-family:inherit;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.panel{display:none;padding-top:18px}
+.panel.on{display:block}
+.tablebox{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 11px;text-align:right;border-bottom:1px solid var(--line2);white-space:nowrap}
+th{background:#fafbfc;color:var(--ink2);font-weight:600;font-size:12.5px;position:sticky;top:0;
+  cursor:pointer;user-select:none}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel);z-index:1}
+th:first-child{background:#fafbfc;z-index:2}
+tbody tr:hover td{background:#fafbfc}
+tbody tr:hover td:first-child{background:#fafbfc}
+td.name{font-weight:600}
+td .code{color:var(--ink3);font-weight:400;font-size:11.5px;margin-left:5px;font-family:ui-monospace,monospace}
+.hi{color:var(--green);font-weight:650}
+.lo{color:var(--red);font-weight:650}
+.dim{color:var(--ink3)}
+.bar{position:relative;height:8px;background:#eef1f4;border-radius:4px;min-width:64px;overflow:hidden}
+.bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--blue)}
+.bar.g>i{background:var(--green)}
+.bar.a>i{background:#d99a2b}
+.chip{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11.5px;font-weight:500}
+.chip.etf{background:var(--blue-bg);color:var(--blue)}
+.chip.link{background:var(--green-bg);color:var(--green)}
+.chip.fof{background:var(--amber-bg);color:var(--amber)}
+.chip.direct{background:var(--violet-bg);color:var(--violet)}
+.chip.ew{background:#eef1f4;color:var(--ink2)}
+.note{background:var(--amber-bg);border:1px solid #f0dcb4;border-radius:var(--radius);
+  padding:13px 16px;margin:14px 0;font-size:13px;color:#6b4a10}
+.note b{color:#7a4d05}
+.note.blue{background:var(--blue-bg);border-color:#d3e0fb;color:#1e3a8a}
+.note.blue b{color:#1e40af}
+.note.gray{background:#f2f4f6;border-color:var(--line);color:var(--ink2)}
+.note.gray b{color:var(--ink)}
+ul,ol{color:var(--ink2);padding-left:22px;margin:9px 0}
+li{margin:5px 0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink3);margin:9px 0 0}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:11px 15px;margin:8px 0}
+details summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--ink)}
+details p,details li{font-size:13px}
+.rawtext{background:#fafbfc;border:1px solid var(--line2);border-radius:7px;padding:10px 12px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px;color:var(--ink2);
+  max-height:210px;overflow:auto;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.5px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.mini{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.mini .t{font-weight:650;font-size:13.5px;margin-bottom:3px}
+.mini .s{font-size:12.5px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <p class="sub">2026 年中期报告穿透分析 · 数据截至 2026-06-30</p>
+  <h1>中国境内跟踪标普 500 的标的：谁真的拿到了指数那部分钱？</h1>
+  <p class="lede">同样跟踪标普 500，2026 上半年场外收益从 <b>5.55%</b> 到 <b>6.90%</b>，相差 1.35 个百分点。
+  差异不来自"选股能力"，而来自三件事：<b>实际参与率</b>、<b>加权综合费率</b>、<b>场内溢价</b>。</p>
+  <div class="tagrow">
+    <span class="tag">12 只产品</span>
+    <span class="tag g">4 只场内 ETF</span>
+    <span class="tag g">6 只场外</span>
+    <span class="tag a">2 只等权重（单列）</span>
+    <span class="tag v">数据源：2026 中报 PDF</span>
+  </div>
+</div>
+
+<h2><span class="num">01</span>关键发现</h2>
+<div class="cards">
+  <div class="card">
+    <div class="k">期末参与率（穿透后）区间</div>
+    <div class="v">94.03% – 95.19%</div>
+    <div class="d">场外产品没有一只真正做到 100%。最高的 <b>天弘FOF A</b> 为 95.19%，
+    最低的 <b>摩根A</b> 只有 94.03%。</div>
+  </div>
+  <div class="card">
+    <div class="k">半年基准收益率最大口径差</div>
+    <div class="v">0.44 pp</div>
+    <div class="d">同样是标普 500，博时 ETF 写 <b>6.60%</b>（NTR），国泰/南方 ETF 写 <b>6.16%</b>。
+    口径不统一，跨基金的"超额收益"不能直接横比。</div>
+  </div>
+  <div class="card">
+    <div class="k">费率误区实例</div>
+    <div class="v">0.60% → 0.86%</div>
+    <div class="d">博时联接 A 页面上写管理费 0.60%，但按目标 ETF 权重加权后，
+    综合管托为 <b>0.86%</b>。</div>
+  </div>
+  <div class="card">
+    <div class="k">场内溢价调整后的参与率</div>
+    <div class="v">96.4% – 98.4%</div>
+    <div class="d">四只 ETF 期末均处溢价状态。按场内价买入，真正买到指数敞口的钱
+    只有 96%–98%。</div>
+  </div>
+</div>
+
+<h2><span class="num">02</span>方法论：从纳指 100 映射到标普 500</h2>
+<p>本项目的分析框架来自 B 站 <a href="https://www.bilibili.com/video/BV1rdet6MEXA" target="_blank">@林怀瑾LHJ《同样跟踪纳斯达克 100，为什么国泰场外在前列？》</a>
+（BV1rdet6MEXA，2026-09-19）。他把"为什么国泰纳指 100 长期稳居场外前列"拆成了三件事，本项目把同一套方法套到标普 500 上：</p>
+<div class="tablebox"><table>
+<thead><tr><th style="text-align:left">纳指 100 版（视频）</th><th style="text-align:left">标普 500 版（本项目）</th></tr></thead>
+<tbody>
+<tr><td style="text-align:left"><b>参与率</b>＝股票占比＋股指期货名义敞口。国泰：股票 80.96% ＋ 期货 19.10% ≈ 100%</td>
+    <td style="text-align:left">同口径。国泰标普500ETF：权益 90.31% ＋ 期货 9.45% ＝ <b>99.76%</b>；场外最好的华夏联接穿透后 <b>95.07%</b></td></tr>
+<tr><td style="text-align:left">期货公允价值被暂收款抵销为 0，<b>名义敞口要看「合约市值」</b></td>
+    <td style="text-align:left">同。四只 ETF 合计持有 ES/HWAU 等标普 500 期货合约市值 17.53 亿元</td></tr>
+<tr><td style="text-align:left">南方：期末参与率 97.84%，但按收益反推半年平均只有约 93.5%——规模半年从 86.6 亿冲到 141.8 亿，建仓节奏拉低了平均仓位</td>
+    <td style="text-align:left">加了「反推平均参与率＝半年净值增长率 ÷ 基准隐含指数收益」一列，用来识别同样的建仓摊薄</td></tr>
+<tr><td style="text-align:left">费率误区：联接基金页面写 0.65% 不代表只收 0.65%，华泰柏瑞按 ETF 权重加权后实际约 0.97%</td>
+    <td style="text-align:left">同。博时联接 A 页面 0.60%，加权综合 <b>0.86%</b>；天弘 QDII-FOF 持的是别人家 ETF，<b>无法豁免</b>，双重收费</td></tr>
+<tr><td style="text-align:left">结论：长期业绩不来自花哨操作，而来自"有没有真的拿到指数那部分钱"</td>
+    <td style="text-align:left">同，且标普 500 还多一层：<b>QDII 额度紧张导致场内 ETF 常年溢价</b>，买场内/买联接都要额外付这笔钱</td></tr>
+</tbody></table></div>
+
+<div class="tabs">
+  <button class="tab on" data-t="p1">参与率与费率</button>
+  <button class="tab" data-t="p2">收益与跟踪缺口</button>
+  <button class="tab" data-t="p3">基准口径对照</button>
+  <button class="tab" data-t="p4">规模变化</button>
+  <button class="tab" data-t="p5">场内溢价</button>
+  <button class="tab" data-t="p6">原始数据与出处</button>
+</div>
+
+<div class="panel on" id="p1">
+  <p><b>参与率</b>衡量的是"基金净资产里有多少真的暴露在指数上"。名义参与率只算本层持仓；
+  <b>穿透后参与率</b>再乘一层目标 ETF 自己的参与率——因为 ETF 自己也不是满仓。</p>
+  <div class="tablebox"><table id="t1">
+  <thead><tr>
+    <th>产品</th><th>类型</th><th>权益</th><th>目标基金</th><th>期货(名义)</th>
+    <th>直接参与率</th><th>穿透后参与率</th><th>vs 基准权重</th>
+    <th>本层管托</th><th>加权综合费率</th>
+  </tr></thead><tbody><tr><td class="name">华夏ETF<span class="code">159655</span></td><td><span class="chip etf">场内ETF</span></td><td>97.66%</td><td>—</td><td>2.34%</td><td data-v="99.9992">100.00%</td><td data-v="99.9992"><b>100.00%</b></td><td data-v="-0.0008" class="dim">-0.00</td><td data-v="0.7500">0.75%</td><td data-v="0.7500">0.75%</td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td><span class="chip etf">场内ETF</span></td><td>98.32%</td><td>—</td><td>1.60%</td><td data-v="99.9211">99.92%</td><td data-v="99.9211"><b>99.92%</b></td><td data-v="-0.0789" class="lo">-0.08</td><td data-v="0.7500">0.75%</td><td data-v="0.7500">0.75%</td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td><span class="chip etf">场内ETF</span></td><td>95.83%</td><td>—</td><td>3.94%</td><td data-v="99.7745">99.77%</td><td data-v="99.7745"><b>99.77%</b></td><td data-v="-0.2255" class="lo">-0.23</td><td data-v="0.8000">0.80%</td><td data-v="0.8000">0.80%</td></tr><tr><td class="name">国泰ETF<span class="code">159612</span></td><td><span class="chip etf">场内ETF</span></td><td>90.31%</td><td>—</td><td>9.45%</td><td data-v="99.7586">99.76%</td><td data-v="99.7586"><b>99.76%</b></td><td data-v="-0.2414" class="lo">-0.24</td><td data-v="0.7500">0.75%</td><td data-v="0.7500">0.75%</td></tr><tr><td class="name">天弘FOF A<span class="code">007721</span></td><td><span class="chip fof">QDII-FOF</span></td><td>—</td><td>91.02%</td><td>4.17%</td><td data-v="95.1884">95.19%</td><td data-v="95.1884"><b>95.19%</b></td><td data-v="0.1884" class="hi">+0.19</td><td data-v="0.8000">0.80%</td><td data-v="0.8421">0.84%</td></tr><tr><td class="name">华夏联接A<span class="code">018064</span></td><td><span class="chip link">联接</span></td><td>0.00%</td><td>91.21%</td><td>3.86%</td><td data-v="95.0703">95.07%</td><td data-v="95.0695"><b>95.07%</b></td><td data-v="0.0695" class="hi">+0.07</td><td data-v="0.7500">0.75%</td><td data-v="0.8159">0.82%</td></tr><tr><td class="name">易方达LOF A<span class="code">161125</span></td><td><span class="chip fof">QDII-LOF</span></td><td>90.69%</td><td>—</td><td>4.32%</td><td data-v="95.0118">95.01%</td><td data-v="95.0118"><b>95.01%</b></td><td data-v="0.0118" class="dim">+0.01</td><td data-v="1.0000">1.00%</td><td data-v="1.0000">1.00%</td></tr><tr><td class="name">博时联接A<span class="code">050025</span></td><td><span class="chip link">联接</span></td><td>—</td><td>92.73%</td><td>2.40%</td><td data-v="95.1362">95.14%</td><td data-v="94.9270"><b>94.93%</b></td><td data-v="-0.0730" class="lo">-0.07</td><td data-v="0.8000">0.80%</td><td data-v="0.8581">0.86%</td></tr><tr><td class="name">国泰联接A<span class="code">017028</span></td><td><span class="chip link">联接</span></td><td>—</td><td>94.80%</td><td>—</td><td data-v="94.8038">94.80%</td><td data-v="94.5749"><b>94.57%</b></td><td data-v="-0.4251" class="lo">-0.43</td><td data-v="0.7500">0.75%</td><td data-v="0.7890">0.79%</td></tr><tr><td class="name">摩根A<span class="code">017641</span></td><td><span class="chip direct">QDII直投</span></td><td>94.03%</td><td>—</td><td>—</td><td data-v="94.0321">94.03%</td><td data-v="94.0321"><b>94.03%</b></td><td data-v="-0.9679" class="lo">-0.97</td><td data-v="0.6500">0.65%</td><td data-v="0.6500">0.65%</td></tr><tr><td class="name">大成等权A<span class="code">096001</span></td><td><span class="chip ew">等权重</span></td><td>93.97%</td><td>—</td><td>—</td><td data-v="93.9743">93.97%</td><td data-v="93.9743"><b>93.97%</b></td><td data-v="-6.0257" class="lo">-6.03</td><td data-v="1.2000">1.20%</td><td data-v="1.2000">1.20%</td></tr><tr><td class="name">长信等权<span class="code">519981</span></td><td><span class="chip ew">等权重</span></td><td>85.95%</td><td>—</td><td>—</td><td data-v="85.9547">85.95%</td><td data-v="85.9547"><b>85.95%</b></td><td data-v="-14.0453" class="lo">-14.05</td><td data-v="1.3000">1.30%</td><td data-v="1.3000">1.30%</td></tr></tbody></table></div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--blue)"></i>场内 ETF</span>
+    <span><i class="dot" style="background:var(--green)"></i>场外 ETF 联接</span>
+    <span><i class="dot" style="background:#d99a2b"></i>场外 QDII-FOF / LOF</span>
+    <span><i class="dot" style="background:var(--violet)"></i>场外直投</span>
+    <span><i class="dot" style="background:#9aa3ad"></i>等权重（口径不同，单列）</span>
+  </div>
+  <div class="note blue">
+    <b>怎么读这张表：</b>「穿透后参与率」低于 100% 的部分，就是没有拿到指数收益的钱。
+    场外产品普遍在 94%–95%，意味着在上涨行情里天然少赚 5 个点左右的指数涨幅；
+    而这 5 个点里，一部分是合同允许的 5% 现金仓位（基准权重 95%），
+    另一部分（如国泰联接 94.57% vs 基准 95%）则是实实在在的跑输。
+  </div>
+</div>
+
+<div class="panel" id="p2">
+  <p>把「穿透后参与率 × 基准隐含指数收益」当作<b>理论收益</b>，与实际净值增长率相减，得到<b>跟踪缺口</b>。
+  缺口理论上应该接近该产品的年化综合费率的一半。</p>
+  <div class="note">
+    <b>重要口径警示：</b>各基金业绩比较基准的口径并不统一（含息/价格、估值汇率/人民币汇率、95% 或 100% 指数），
+    半年基准收益从 5.86% 到 12.13% 不等，跨度 0.44 个百分点。
+    因此下表的「理论收益」「缺口」用了两个统一口径分别计算（6.60% 与 6.16%），
+    请当作区间看，不要当点估计。
+  </div>
+  <div class="tablebox"><table id="t2">
+  <thead><tr>
+    <th>产品</th><th>净值增长率(A)</th><th>自己基准</th><th>①−③</th>
+    <th>基准隐含指数</th><th>理论收益<br><span class="dim" style="font-weight:400">@6.60%</span></th>
+    <th>缺口 pp</th><th>理论收益<br><span class="dim" style="font-weight:400">@6.16%</span></th>
+    <th>缺口 pp</th><th>反推平均参与率</th><th>期末−反推</th>
+  </tr></thead><tbody><tr><td class="name">华夏ETF<span class="code">159655</span></td><td data-v="6.5100"><b>6.51%</b></td><td data-v="6.2900">6.29%</td><td data-v="0.2200" class="hi">+0.22</td><td data-v="6.2900">6.29%</td><td data-v="6.5999">6.60%</td><td data-v="0.0899" class="dim">+0.09</td><td data-v="6.1599">6.16%</td><td data-v="-0.3501" class="hi">-0.35</td><td data-v="98.6364">98.64%</td><td data-v="1.3628" class="dim">+1.36</td></tr><tr><td class="name">国泰ETF<span class="code">159612</span></td><td data-v="6.2700"><b>6.27%</b></td><td data-v="6.1600">6.16%</td><td data-v="0.1100" class="hi">+0.11</td><td data-v="6.1600">6.16%</td><td data-v="6.5841">6.58%</td><td data-v="0.3141" class="dim">+0.31</td><td data-v="6.1451">6.15%</td><td data-v="-0.1249" class="hi">-0.12</td><td data-v="95.0000">95.00%</td><td data-v="4.7586" class="dim">+4.76</td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td data-v="6.2200"><b>6.22%</b></td><td data-v="6.6000">6.60%</td><td data-v="-0.3800" class="lo">-0.38</td><td data-v="6.6000">6.60%</td><td data-v="6.5851">6.59%</td><td data-v="0.3651" class="dim">+0.37</td><td data-v="6.1461">6.15%</td><td data-v="-0.0739" class="hi">-0.07</td><td data-v="94.2424">94.24%</td><td data-v="5.5321" class="dim">+5.53</td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td data-v="6.2100"><b>6.21%</b></td><td data-v="6.1600">6.16%</td><td data-v="0.0500" class="hi">+0.05</td><td data-v="6.1600">6.16%</td><td data-v="6.5948">6.59%</td><td data-v="0.3848" class="dim">+0.38</td><td data-v="6.1551">6.16%</td><td data-v="-0.0549" class="hi">-0.05</td><td data-v="94.0909">94.09%</td><td data-v="5.8302" class="dim">+5.83</td></tr><tr><td class="name">国泰联接A<span class="code">017028</span></td><td data-v="6.9000"><b>6.90%</b></td><td data-v="5.8700">5.87%</td><td data-v="1.0300" class="hi">+1.03</td><td data-v="6.1779">6.18%</td><td data-v="6.2419">6.24%</td><td data-v="-0.6581" class="hi">-0.66</td><td data-v="5.8258">5.83%</td><td data-v="-1.0742" class="hi">-1.07</td><td data-v="104.5455">104.55%</td><td data-v="-9.9705" class="lo">-9.97</td></tr><tr><td class="name">华夏联接A<span class="code">018064</span></td><td data-v="6.8100"><b>6.81%</b></td><td data-v="6.0000">6.00%</td><td data-v="0.8100" class="hi">+0.81</td><td data-v="6.3147">6.31%</td><td data-v="6.2746">6.27%</td><td data-v="-0.5354" class="hi">-0.54</td><td data-v="5.8563">5.86%</td><td data-v="-0.9537" class="hi">-0.95</td><td data-v="103.1818">103.18%</td><td data-v="-8.1123" class="lo">-8.11</td></tr><tr><td class="name">摩根A<span class="code">017641</span></td><td data-v="6.6000"><b>6.60%</b></td><td data-v="5.8600">5.86%</td><td data-v="0.7400" class="hi">+0.74</td><td data-v="6.1674">6.17%</td><td data-v="6.2061">6.21%</td><td data-v="-0.3939" class="hi">-0.39</td><td data-v="5.7924">5.79%</td><td data-v="-0.8076" class="hi">-0.81</td><td data-v="100.0000">100.00%</td><td data-v="-5.9679" class="lo">-5.97</td></tr><tr><td class="name">易方达LOF A<span class="code">161125</span></td><td data-v="6.1300"><b>6.13%</b></td><td data-v="5.8700">5.87%</td><td data-v="0.2600" class="hi">+0.26</td><td data-v="6.1779">6.18%</td><td data-v="6.2708">6.27%</td><td data-v="0.1408" class="dim">+0.14</td><td data-v="5.8527">5.85%</td><td data-v="-0.2773" class="hi">-0.28</td><td data-v="92.8788">92.88%</td><td data-v="2.1330" class="dim">+2.13</td></tr><tr><td class="name">博时联接A<span class="code">050025</span></td><td data-v="6.1200"><b>6.12%</b></td><td data-v="6.2900">6.29%</td><td data-v="-0.1700" class="lo">-0.17</td><td data-v="6.6200">6.62%</td><td data-v="6.2652">6.27%</td><td data-v="0.1452" class="dim">+0.15</td><td data-v="5.8475">5.85%</td><td data-v="-0.2725" class="hi">-0.27</td><td data-v="92.7273">92.73%</td><td data-v="2.1998" class="dim">+2.20</td></tr><tr><td class="name">天弘FOF A<span class="code">007721</span></td><td data-v="5.5500"><b>5.55%</b></td><td data-v="5.8700">5.87%</td><td data-v="-0.3200" class="lo">-0.32</td><td data-v="6.1779">6.18%</td><td data-v="6.2824">6.28%</td><td data-v="0.7324" class="dim">+0.73</td><td data-v="5.8636">5.86%</td><td data-v="0.3136" class="dim">+0.31</td><td data-v="84.0909">84.09%</td><td data-v="11.0975" class="dim">+11.10</td></tr><tr><td class="name">长信等权<span class="code">519981</span></td><td data-v="10.0500"><b>10.05%</b></td><td data-v="10.3300">10.33%</td><td data-v="-0.2800" class="lo">-0.28</td><td data-v="10.3300">10.33%</td><td data-v="5.6730">5.67%</td><td data-v="-4.3770" class="hi">-4.38</td><td data-v="5.2948">5.29%</td><td data-v="-4.7552" class="hi">-4.76</td><td data-v="152.2727">152.27%</td><td data-v="-66.3181" class="lo">-66.32</td></tr><tr><td class="name">大成等权A<span class="code">096001</span></td><td data-v="7.6300"><b>7.63%</b></td><td data-v="12.1300">12.13%</td><td data-v="-4.5000" class="lo">-4.50</td><td data-v="12.1300">12.13%</td><td data-v="6.2023">6.20%</td><td data-v="-1.4277" class="hi">-1.43</td><td data-v="5.7888">5.79%</td><td data-v="-1.8412" class="hi">-1.84</td><td data-v="115.6061">115.61%</td><td data-v="-21.6318" class="lo">-21.63</td></tr></tbody></table></div>
+  <div class="note gray">
+    <b>「反推平均参与率」＝ 半年净值增长率 ÷ 基准隐含指数收益</b>，它包含全部成本，
+    所以正常情况应该低于期末参与率，差值就是期内平均仓位偏低 + 各种隐性成本。
+    这个指标在视频里被用来抓"规模快速膨胀摊薄仓位"的问题。
+  </div>
+</div>
+
+<div class="panel" id="p3">
+  <p>所有产品都声称跟踪标普 500，但业绩比较基准的写法差别很大。中报原文摘录如下（这是本项目所有收益口径的来源）：</p>
+  <div class="tablebox"><table id="t3">
+  <thead><tr><th>产品</th><th style="text-align:left">中报原文基准定义</th><th>指数权重</th><th>半年基准收益</th><th>反推指数收益</th></tr></thead>
+  <tbody><tr><td class="name">大成等权A<span class="code">096001</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500等权重指数（全收益指数）收益率</td><td data-v="100.00">100%</td><td data-v="12.1300"><b>12.13%</b></td><td data-v="12.1300">12.13%</td></tr><tr><td class="name">长信等权<span class="code">519981</span></td><td style="text-align:left;white-space:normal;min-width:340px">标准普尔100等权重指数总收益率</td><td data-v="100.00">100%</td><td data-v="10.3300"><b>10.33%</b></td><td data-v="10.3300">10.33%</td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500指数（S&P500Index（NTR，NettotalReturn））（经估值汇率调整，以人民币计价）</td><td data-v="100.00">100%</td><td data-v="6.6000"><b>6.60%</b></td><td data-v="6.6000">6.60%</td></tr><tr><td class="name">华夏ETF<span class="code">159655</span></td><td style="text-align:left;white-space:normal;min-width:340px">经估值汇率调整后的标普500指数收益率</td><td data-v="100.00">100%</td><td data-v="6.2900"><b>6.29%</b></td><td data-v="6.2900">6.29%</td></tr><tr><td class="name">博时联接A<span class="code">050025</span></td><td style="text-align:left;white-space:normal;min-width:340px">经人民币汇率调整的标的指数收益率×95%＋人民币活期存款税后利率×5%</td><td data-v="95.00">95%</td><td data-v="6.2900"><b>6.29%</b></td><td data-v="6.6200">6.62%</td></tr><tr><td class="name">国泰ETF<span class="code">159612</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500指数收益率（经估值汇率调整）</td><td data-v="100.00">100%</td><td data-v="6.1600"><b>6.16%</b></td><td data-v="6.1600">6.16%</td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td style="text-align:left;white-space:normal;min-width:340px">经汇率调整后的标的指数收益率</td><td data-v="100.00">100%</td><td data-v="6.1600"><b>6.16%</b></td><td data-v="6.1600">6.16%</td></tr><tr><td class="name">华夏联接A<span class="code">018064</span></td><td style="text-align:left;white-space:normal;min-width:340px">经人民币汇率调整的标的指数收益率×95%＋</td><td data-v="95.00">95%</td><td data-v="6.0000"><b>6.00%</b></td><td data-v="6.3147">6.31%</td></tr><tr><td class="name">国泰联接A<span class="code">017028</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500指数收益率（经估值汇率调整）×95%+银行活期存款利率（税后）×5%</td><td data-v="95.00">95%</td><td data-v="5.8700"><b>5.87%</b></td><td data-v="6.1779">6.18%</td></tr><tr><td class="name">天弘FOF A<span class="code">007721</span></td><td style="text-align:left;white-space:normal;min-width:340px">95%*标普500指数收益率（使用估值汇率折算）+5%*人民币活期存款利率（税后）</td><td data-v="95.00">95%</td><td data-v="5.8700"><b>5.87%</b></td><td data-v="6.1779">6.18%</td></tr><tr><td class="name">易方达LOF A<span class="code">161125</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500指数收益率(使用估值汇率折算)×95%+活期存款利率(税后)×5%</td><td data-v="95.00">95%</td><td data-v="5.8700"><b>5.87%</b></td><td data-v="6.1779">6.18%</td></tr><tr><td class="name">摩根A<span class="code">017641</span></td><td style="text-align:left;white-space:normal;min-width:340px">标普500指数收益率(经汇率调整后)×95%+银行活期存款利率(税后)×5%</td><td data-v="95.00">95%</td><td data-v="5.8600"><b>5.86%</b></td><td data-v="6.1674">6.17%</td></tr></tbody></table></div>
+  <div class="note">
+    <b>三点差异：</b>
+    <ol>
+      <li><b>含息与否：</b>博时 ETF 明确写 <code>NTR（Net Total Return，净总收益）</code>，
+      其余多数只写"标普 500 指数收益率"。含息与价格指数半年能差 0.3–0.5 个百分点。</li>
+      <li><b>汇率口径：</b>"经估值汇率调整"与"经人民币汇率调整"并存，估值时点不同会产生差异。</li>
+      <li><b>指数权重：</b>ETF 与等权重产品用 100% 指数，场外联接/QDII-FOF 普遍用 95% 指数 + 5% 活期。</li>
+    </ol>
+  </div>
+</div>
+
+<div class="panel" id="p4">
+  <p>规模变化是理解"参与率为什么不是 100%"的关键：半年内规模快速膨胀的产品，
+  期内平均仓位会被建仓节奏拉低。</p>
+  <div class="tablebox"><table id="t4">
+  <thead><tr><th>产品</th><th>期初净资产</th><th>期末净资产</th><th>半年变化</th><th style="text-align:left">变化幅度</th></tr></thead>
+  <tbody><tr><td class="name">长信等权<span class="code">519981</span></td><td data-v="465231635">4.65</td><td data-v="1714015020">17.14</td><td data-v="268.4219" class="hi">+268.4%</td><td style="text-align:left"><div class="bar g"><i style="width:100.0%"></i></div></td></tr><tr><td class="name">国泰ETF<span class="code">159612</span></td><td data-v="492431273">4.92</td><td data-v="843658585">8.44</td><td data-v="71.3251" class="hi">+71.3%</td><td style="text-align:left"><div class="bar g"><i style="width:100.0%"></i></div></td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td data-v="4678884316">46.79</td><td data-v="7693914107">76.94</td><td data-v="64.4391" class="hi">+64.4%</td><td style="text-align:left"><div class="bar g"><i style="width:94.9%"></i></div></td></tr><tr><td class="name">摩根A<span class="code">017641</span></td><td data-v="4518903739">45.19</td><td data-v="7154809602">71.55</td><td data-v="58.3306" class="hi">+58.3%</td><td style="text-align:left"><div class="bar g"><i style="width:89.4%"></i></div></td></tr><tr><td class="name">大成等权A<span class="code">096001</span></td><td data-v="741787124">7.42</td><td data-v="940021144">9.40</td><td data-v="26.7238" class="hi">+26.7%</td><td style="text-align:left"><div class="bar g"><i style="width:60.7%"></i></div></td></tr><tr><td class="name">华夏ETF<span class="code">159655</span></td><td data-v="3500078476">35.00</td><td data-v="3937315090">39.37</td><td data-v="12.4922" class="hi">+12.5%</td><td style="text-align:left"><div class="bar g"><i style="width:47.7%"></i></div></td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td data-v="22319550354">223.20</td><td data-v="23999003873">239.99</td><td data-v="7.5246" class="hi">+7.5%</td><td style="text-align:left"><div class="bar g"><i style="width:43.2%"></i></div></td></tr><tr><td class="name">易方达LOF A<span class="code">161125</span></td><td data-v="1631575868">16.32</td><td data-v="1666915418">16.67</td><td data-v="2.1660" class="hi">+2.2%</td><td style="text-align:left"><div class="bar g"><i style="width:38.3%"></i></div></td></tr><tr><td class="name">博时联接A<span class="code">050025</span></td><td data-v="10412212356">104.12</td><td data-v="10056626695">100.57</td><td data-v="-3.4151" class="lo">-3.4%</td><td style="text-align:left"><div class="bar a"><i style="width:33.3%"></i></div></td></tr><tr><td class="name">天弘FOF A<span class="code">007721</span></td><td data-v="4967660451">49.68</td><td data-v="4315890053">43.16</td><td data-v="-13.1203" class="lo">-13.1%</td><td style="text-align:left"><div class="bar a"><i style="width:24.4%"></i></div></td></tr><tr><td class="name">国泰联接A<span class="code">017028</span></td><td data-v="242633346">2.43</td><td data-v="192378162">1.92</td><td data-v="-20.7124" class="lo">-20.7%</td><td style="text-align:left"><div class="bar a"><i style="width:17.5%"></i></div></td></tr><tr><td class="name">华夏联接A<span class="code">018064</span></td><td data-v="643490647">6.43</td><td data-v="484539803">4.85</td><td data-v="-24.7013" class="lo">-24.7%</td><td style="text-align:left"><div class="bar a"><i style="width:13.9%"></i></div></td></tr></tbody></table></div>
+</div>
+
+<div class="panel" id="p5">
+  <p>场内 ETF 的<b>收盘价</b>与<b>份额净值</b>不是一回事。QDII 额度紧张时，场内价格会长期高于净值。
+  联接基金持有目标 ETF，若按收盘价估值，这笔溢价也会进出联接的净值。</p>
+  <div class="tablebox"><table id="t5">
+  <thead><tr><th>ETF</th><th>期初收盘价</th><th>期初净值</th><th>期初溢价</th>
+  <th>期末收盘价</th><th>期末净值</th><th>期末溢价</th><th>半年价格涨幅</th><th>半年净值涨幅</th>
+  <th>溢价调整后参与率</th></tr></thead>
+  <tbody><tr><td class="name">国泰ETF<span class="code">159612</span></td><td>1.874</td><td>1.7844</td><td data-v="5.0213"><b>+5.02%</b></td><td>1.963</td><td>1.8963</td><td data-v="3.5174"><b>+3.52%</b></td><td data-v="4.7492">+4.75%</td><td data-v="6.2700">+6.27%</td><td data-v="96.3689"><b>96.37%</b></td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td>2.432</td><td>2.2750</td><td data-v="6.9011"><b>+6.90%</b></td><td>2.483</td><td>2.4164</td><td data-v="2.7562"><b>+2.76%</b></td><td data-v="2.0970">+2.10%</td><td data-v="6.2200">+6.22%</td><td data-v="97.0983"><b>97.10%</b></td></tr><tr><td class="name">华夏ETF<span class="code">159655</span></td><td>1.815</td><td>1.7395</td><td data-v="4.3403"><b>+4.34%</b></td><td>1.885</td><td>1.8527</td><td data-v="1.7434"><b>+1.74%</b></td><td data-v="3.8567">+3.86%</td><td data-v="6.5100">+6.51%</td><td data-v="98.2857"><b>98.29%</b></td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td>1.808</td><td>1.7324</td><td data-v="4.3639"><b>+4.36%</b></td><td>1.868</td><td>1.8399</td><td data-v="1.5273"><b>+1.53%</b></td><td data-v="3.3186">+3.32%</td><td data-v="6.2100">+6.21%</td><td data-v="98.4180"><b>98.42%</b></td></tr></tbody></table></div>
+  <div class="note">
+    <b>口径提醒：</b>QDII 基金净值存在 T+1 披露时滞，同日「收盘价 ÷ 净值」会把隔夜美股涨跌算进溢价，
+    从而系统性放大或缩小溢价率。本表给的是同日口径；严谨计算应使用 <code>价格(T) ÷ 净值(T-1)</code>，
+    两端口径的差异已在下文「未能解释的部分」中说明。
+  </div>
+</div>
+
+<div class="panel" id="p6">
+  <p>每一项指标的原始出处。PDF 全文可通过 <code>python scripts/fetch_reports.py</code> 重新下载。</p>
+  <details><summary>天弘FOF A · 007721 <span class='dim'>（data/pdf/007721_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 0.00%、基金投资 91.02%、现金 3.82%、期货名义敞口 4.17%</p><p><b>穿透说明</b>：持有 6 只海外标普500 ETF（合计占净值 91.05%），底层 ETF 接近满仓，穿透后不再打折；底层费率加权约 0.046%</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.2%；本层 0.80% 全额计提（持别人家 ETF，无法豁免）+ 底层 ETF 费率按权重摊到净值约 0.042%。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：天弘标普500发起（QDII-FOF）A：净值 5.55% / 基准 5.87%；天弘标普500发起（QDII-FOF）C：净值 5.42% / 基准 5.87%；天弘标普500发起（QDII-FOF）D：净值 5.42% / 基准 5.87%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注:1、支付基金管理人的管理人报酬按前一日基金资产净值0.60%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝前一日基金资产净值×该日适用费率/当年天数。2、客户维护费是指基金管理人与基金销售机构在基金销售协议中约定的依据销售机构销售基金的保有量提取一定比例的客户维护费，用以向基金销售机构支付客户服务及销售活动中产生的相关费用，该费用从基金管理人收取的基金管理费中列支，不属于从基金资产中列支的费用项目。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注:1、支付基金托管人中信银行股份有限公司的托管费按前一日基金资产净值0.25%/0.20%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值×该日适用费率/当年天数。2、自2025年02月13日起，本基金托管费率由0.25%调整为0.20%。托管费率调整公告详见官网。</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量（买/卖）合约市值公允价值变动ESU6IndexS&P500EMINIFUTSep2670.00179,936,315.74-1,608,027.18合计-1,608,027.18</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例(%)1权益投资--其中：普通股--存托凭证--优先股--房地产信托凭证--2基金投资3,928,292,286.9889.533固定收益投资131,161,904.282.99其中：债券131,161,904.282.99资产支持证券--4金融衍生品投资--其中：远期--期货--期权--<<<PAGE49>>>天弘标普500发起式证券投资基金（QDII-FOF）2026年中期报告第49页权证--5买入返售金融资产135,000,000.003.08其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计164,927,979.553.768其他各项资产28,427,156.030.659合计4,387,809,326.84100.007.2期末在各个国家（地区）证券市场的权益投资分布本基金本报告期末未持有权益投资。7.3期末按行业分类的权益投资组合本基金本报告期末未持有权益投资。7.4期末按公允价值占基金资产净值比例大小排序的权益投资明细本基金本报告期末未持有权益投资。7.5报告期内权益投资组合的重大变动7.5.1累计买入金额超出期初基金资产净值2%或前20名的权益投资明细本基金本报告期内未进行买入权益投资交易。7.5.2累计卖出金额超出期初基金资产净值2%或前20名的权益投资明细本基金本报告期内未进行卖出权益投资交易。7.5.3权益投资的买入成本总额及卖出收入总额本基金本报告期内未进行买入、卖出权益投资交易。7.6期末按债券信用等级分类的债券投资组合金额单位：人民币元债券信用等级公允价值占基金资产净<<<PAGE50>>>天弘标普500发起式证券投资基金（QDII-FOF）2026年中期报告第50页</div><p><b>底层持仓</b>：SPDR Portfolio S&P 500 ETF（占净值 19.93%，费率 0.0200%）；SPDR S&P 500 ETF Trust（占净值 19.88%，费率 0.0945%）；Vanguard S&P 500 ETF（占净值 19.87%，费率 0.0300%）；iShares Core S&P 500 ETF（占净值 19.88%，费率 0.0300%）；iShares Core S&P 500 UCITS ETF（占净值 8.53%，费率 0.0700%）；Invesco S&P 500 UCITS ETF（占净值 2.97%，费率 0.0500%）</p></details><details><summary>国泰联接A · 017028 <span class='dim'>（data/pdf/017028_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 0.00%、基金投资 94.80%、现金 4.11%、期货名义敞口 0.00%</p><p><b>穿透说明</b>：目标 ETF 159612 自身参与率 99.76%（权益 90.31% + 期货 9.45%）</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.15%；目标 ETF 费率 0.75% + 本层 0.75% ×(1−目标ETF权重 94.80%)，本基金对目标 ETF 部分免收管理费/托管费。豁免标记：管理费 有／托管费 有</p><p><b>各份额半年收益</b>：国泰标普500ETF发起联接（QDII）A人民币：净值 6.9% / 基准 5.87%；国泰标普500ETF发起联接（QDII）C人民币：净值 6.74% / 基准 5.87%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：1、本基金基金财产中投资于目标ETF的部分不收取管理费，支付基金管理人的管理人报酬按前一日基金资产净值扣除基金财产中目标ETF份额所对应资产净值后剩余部分(若为负数，则取0)的0.60%年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝(前一日基金资产净值–基金财产中目标ETF份额所对应的资产净值)X0.60%/当年天数。2、由于基金管理人对基金财产中持有的自身管理的基金部分不收取管理费，但客户维护费的收取标准并不调减，因此出现净管理费为负值的情况。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：本基金基金财产中投资于目标ETF的部分不收取托管费，支付基金托管人的托管费按前一日基金资产净值扣除基金财产中目标ETF份额所对应资产净值后剩余部分(若为负数，则取0)的0.15%年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝(前一日基金资产净值–基金财产中目标ETF份额所对应的资产净值)X0.15%/当年天数。<<<PAGE30>>>国泰标普500交易型开放式指数证券投资基金发起式联接基金（QDII）2026年中期报告第30页共46页</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资--其中：普通股--存托凭证--优先股--房地产信托凭证--2基金投资182,381,840.7893.673固定收益投资3,442,073.371.77其中：债券3,442,073.371.77资产支持证券--<<<PAGE39>>>国泰标普500交易型开放式指数证券投资基金发起式联接基金（QDII）2026年中期报告第39页共46页4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计7,897,442.844.068其他各项资产976,730.500.509合计194,698,087.49100.007.2期末投资目标基金明细金额单位：人民币元序号基金名称基金类型运作方式管理人公允价值占基金资产净值比例(%)1国泰标普500交易型开放式指数证券投资基金（QDII）股票型交易型开放式（ETF）国泰基金管理有限公司182,381,840.7894.807.3期末在各个国家（地区）证券市场的权益投资分布本基金本报告期末未持有权益投资。7.4期末按行业分类的权益投资组合本基金本报告期末未持有权益投资。7.5期末按公允价值占基金资产净值比例大小排序的所有权益投资明细本基金本报告期末未持有权益投资。7.6报告期内权益投资组合的重大变动本基金本报告期内未进行权益投资。7.7期末按债券信用等级分类的债券投资组合金额单位：人民币元<<<PAGE40>>>国泰标普500交易型开放式指数证券投资基金发起式联接基金（QDII）2026年中期报告第40页共46页债券信用等级公允价值占基金资产净值比例（％）无评级3,442,073.371.79注：本基金债券投资组合主要采用穆迪、</div></details><details><summary>摩根A · 017641 <span class='dim'>（data/pdf/017641_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 94.03%、基金投资 0.00%、现金 6.90%、期货名义敞口 0.00%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.5% + 托管费 0.15%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：摩根标普500指数(QDII)人民币A：净值 6.6% / 基准 5.86%；摩根标普500指数(QDII)人民币C：净值 6.44% / 基准 5.86%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：支付基金管理人的管理人报酬按前一日基金资产净值0.50%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为:日管理人报酬＝前一日基金资产净值X0.50%/当年天数。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：支付基金托管人的托管费按前一日基金资产净值0.15%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为:日托管费＝前一日基金资产净值×0.15%/当年天数。</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资6,727,818,308.4192.71<<<PAGE44>>>摩根标普500指数型发起式证券投资基金(QDII)2026年中期报告第44页共100页其中：普通股6,727,818,308.4192.71存托凭证--优先股--房地产信托凭证--2基金投资--3固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计493,977,874.596.818其他各项资产34,840,177.210.489合计7,256,636,360.21100.007.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（%）美国6,727,818,308.4194.03合计6,727,818,308.4194.03注：国家（地区）类别根据其所在的证券交易所确定，ADR、GDR按照存托凭证本身挂牌的证券交易所确定。7.3期末按行业分类的权益投资组合7.3.1期末指数投资按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例(%)基础材料121,883,233.481.70消费者非必需品631,937,015.078.83消费者常用品308,536,456.554.31能源200,389,356.972.80金融768,397,217.7310.74医疗保健602,010,965.9</div></details><details><summary>华夏联接A · 018064 <span class='dim'>（data/pdf/018064_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 0.00%、基金投资 91.21%、现金 2.89%、期货名义敞口 3.86%</p><p><b>穿透说明</b>：目标 ETF 159655 自身参与率 100.00%（权益 97.66% + 期货 2.34%）</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.15%；目标 ETF 费率 0.75% + 本层 0.75% ×(1−目标ETF权重 91.21%)，本基金对目标 ETF 部分免收管理费/托管费。豁免标记：管理费 有／托管费 有</p><p><b>各份额半年收益</b>：华夏标普500ETF发起式联接（QDII）A：净值 6.81% / 基准 6.0%；华夏标普500ETF发起式联接（QDII）C：净值 6.65% / 基准 6.0%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：①支付基金管理人的基金管理人报酬按前一日基金资产净值扣除基金资产中目标ETF份额所对应资产净值后剩余部分(剩余部分若为负数则取0)的0.60%年费率计提，逐日累计至每月月底，按月支付。②基金管理人报酬计算公式为：日基金管理人报酬＝(前一日的基金资产净值–前一日基金资产中目标ETF份额所对应资产净值)×年费率/当年天数。若前一日的基金资产净值扣除基金资产中目标ETF份额所对应资产净值后剩余部分为负数，则按0计算。③客户维护费是指基金管理人与基金销售机构约定的用以向基金销售机构支付客户服务及销售活动中产生的相关费用，该费用按照代销机构所代销基金的份额保有量作为基数进行计算，从基金管理人收取的基</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：①支付基金托管人的基金托管费按前一日基金资产净值扣除基金资产中目标ETF份额所对应资产净值后剩余部分(剩余部分若为负数则取0)的0.15%的年费率计提，逐日累计至每月月底，按月支付。②基金托管费计算公式为：日基金托管费＝（前一日的基金资产净值–前一日基金资产中目标ETF份额所对应资产净值）×年费率/当年天数。若前一日的基金资产净值扣除基金资产中目标ETF份额所对应资产净值后剩余部分为负数，则按0计算。</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量（买/卖）合约市值公允价值变动HWAU6SP500MICEMINFUTSep264311,010,386.96115,838.81ESU6S&P500EMINIFUTSep2637,681,665.3280,716.41合计---196,555.22</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资9,968.000.00其中：普通股9,968.000.00存托凭证--优先股--房地产信托--2基金投资441,951,393.3090.693固定收益投资20,191,073.984.14其中：债券20,191,073.984.14资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计14,019,396.722.888其他各项资产11,140,876.492.299合计487,312,708.49100.007.2期末在各个国家（地区）证券市场的权益投资分布<<<PAGE44>>>华夏标普500交易型开放式指数证券投资基金发起式联接基金（QDII）2026年中期报告44金额单位：人民币元国家（地区）公允价值占基金资产净值比例（%）中国内地9,968.000.00合计9,968.000.007.3期末按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例（%）保健--必需消费品--材料--房地产--非必需消费品--工业--公用事业--金融--能源--通信服务--信息技术--合计--注：①以上分类采用全球行业分类标准（GICS）。②本报告期末本基金持有的部分股票尚无全球行业分类标准（GICS），公允价值合计为9,968.00元，占基金资产净值比例合计为0.00%，因此上表未包含上述股票数据。7.4期末按公允价值占基金资产净值比例大小排序的所有权益投资明细7.4.1期末按公允价值占基金资产净值比例大小排序的所有权益投资明细金额单位：人民币元序号公司名称（英文）公司名称（中文）证券代码所在</div></details><details><summary>博时联接A · 050025 <span class='dim'>（data/pdf/050025_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 0.00%、基金投资 92.73%、现金 7.51%、期货名义敞口 2.40%</p><p><b>穿透说明</b>：目标 ETF 513500 自身参与率 99.77%（权益 95.83% + 期货 3.94%）</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.2%；目标 ETF 费率 0.80% + 本层 0.80% ×(1−目标ETF权重 92.73%)，本基金对目标 ETF 部分免收管理费/托管费。豁免标记：管理费 有／托管费 有</p><p><b>各份额半年收益</b>：博时标普500ETF联接A：净值 6.12% / 基准 6.29%；博时标普500ETF联接C：净值 5.93% / 基准 6.29%；博时标普500ETF联接E：净值 6.11% / 基准 6.29%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：本基金投资于目标ETF部分不收取管理费。支付基金管理人博时基金的管理人报酬按前一日基金资产净值扣除本基金持有的目标ETF部分后的余额(若为负数，则取零)0.60%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝前一日基金资产净值扣除本基金持有的目标ETF部分后的余额(若为负数，则取零)×0.60%/当年天数。由于基金管理人不得对基金财产中持有的自身管理的基金部分收取管理费，但客户维护费的收取标准并不调减，可能出现净管理费为负值的情况。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：本基金投资于目标ETF部分不收取托管费。于本期及上年度可比期间，截至2025年1月26日止，支付基金托管人的托管费按前一日基金资产净值扣除本基金持有的目标ETF部分后的余额(若为负数，则取零)0.25%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值扣除本基金持有的目标ETF部分后的余额(若为负数，则取零)×0.25%/当年天数。自2025年1月27日起，支付基金托管人的托管费按前一日基金资产净值扣除本基金持有的目标ETF部分后的余额(若为负数，则取零)0.20%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值扣除</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量(买/卖)合约市值公允价值变动ES2609CBTES260994.00241,628,766.85-1,222,811.96合计----1,222,811.96</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例<<<PAGE51>>>博时标普500交易型开放式指数证券投资基金联接基金2026年中期报告50（%）1权益投资--其中：普通股--存托凭证--优先股--房地产信托凭证--2基金投资9,325,861,508.2792.243固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计755,133,199.127.478其他各项资产29,311,664.110.299合计10,110,306,371.50100.007.2期末投资目标基金明细金额单位：人民币元序号基金名称基金类型运作方式管理人公允价值占基金资产净值比例(%)1博时标普500ETF(QDII)ETF开放式博时基金管理有限公司9,325,861,508.2792.73<<<PAGE52>>>博时标普500交易型开放式指数证券投资基金联接基金2026年中期报告517.3期末在各个国家（地区）证券市场的权益投资分布本基金本报告期末未持有股票及存托凭证。7.4期末按行业分类的权益投资组合本基金本报告期末未持有股票及存托凭证。7.5期末按公允价值占基金资产净值比例大小排序的所有权益投资明细本基金本报告期末未持有权益投资。7.6报告期内权益投资组合的重大变动7.6.1累计买入金额超出期初基金资产净值2%或前20名的权益投资明细无。7.6.2累计卖出金额超出期初基金资产净值2%或前20名的权益投资明细无。7.6.3权益投资的买入成本总额及卖出收入总额无7.7期末按债券信用等级分类的债券投资组合本基金本报告期末未持有债券。7.8期末按公允价值占基金资产净值比例大小排</div></details><details><summary>大成等权A · 096001 <span class='dim'>（data/pdf/096001_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 93.97%、基金投资 0.00%、现金 6.71%、期货名义敞口 0.00%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 1.0% + 托管费 0.2%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：大成标普500等权重指数(QDII)A人民币：净值 7.63% / 基准 12.13%；大成标普500等权重指数(QDII)C人民币：净值 7.47% / 基准 12.13%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：本基金管理费年费率为1.00%，每日计提，按月支付。其计算公式为：日管理费＝前一日基金资产净值×管理费年费率/当年天数。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：（1）本基金托管费年费率为0.20%，每日计提，按月支付。其计算公式为：日托管费＝前一日基金资产净值×托管费年费率/当年天数。（2）本基金自2025年2月28日起，托管费年费率由0.25%调整为0.20%。</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况无。6.4.7.3.3期末基金持有的黄金衍生品情况无。6.4.7.4买入返售金融资产6.4.7.4.1各项买入返售金融资产期末余额无。6.4.7.4.2期末买断式逆回购交易中取得的债券无。6.4.7.4.3按预期信用损失一般模型计提减值准备的说明无。6.4.7.5债权投资6.4.7.5.1债权投资情况无。6.4.7.5.2债权投资减值准备计提情况无。6.4.7.6其他债权投资6.4.7.6.1其他债权投资情况无。6.4.7.6.2其他债权投资减值准备计提情况无。6.4.7.7其他权益工具投资6.4.7.7.1其他权益工具投资情况无。6.4.7.7.2报告期末其他权益工具投资情况无。<<<PAGE24>>>大成标普500等权重指数证券投资基金2026年中期报告第24页共100页6.4.7.8其他资产无。6.4.7.9其他负债单位：人民币元项目本期末2026年6月30日应付券商交易单元保证金-应付赎回费11,990.70应付证券出借违约金-应付交易费用-其中：交易所市场-银行间市场-应付利息-其他3,730.33预提费用86,780.45合计102,501.486.4.7.10实收基金金</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资883,377,895.1392.96其中：普通股883,377,895.1392.96存托凭证--优先股--房地产信托凭证--2基金投资--3固定收益投资--其中：债券--资产支持证券--<<<PAGE41>>>大成标普500等权重指数证券投资基金2026年中期报告第41页共100页4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计63,094,141.446.648其他各项资产3,826,955.620.409合计950,298,992.19100.007.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（%）美国883,377,895.1393.97合计883,377,895.1393.977.3期末按行业分类的权益投资组合7.3.1期末指数投资按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例(%)通讯44,573,720.094.74非必需消费品82,857,973.418.81必需消费品57,452,645.576.11能源35,630,849.993.79金融139,951,918.4514.89房地产52,222,845.995.56医疗保健104,151,314.7611.08工业140,080,610.1914.90材料48,135,259.785.12科技</div></details><details><summary>国泰ETF · 159612 <span class='dim'>（data/pdf/159612_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 90.31%、基金投资 0.00%、现金 8.91%、期货名义敞口 9.45%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.15%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：主份额：净值 6.27% / 基准 6.16%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：支付基金管理人的管理人报酬按前一日基金资产净值0.60%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝前一日基金资产净值X0.60%/当年天数。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：支付基金托管人的托管费按前一日基金资产净值0.15%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值X0.15%/当年天数。6.4.10.3与关联方进行银行间同业市场的债券(含回购)交易本基金本报告期内及上年度可比期间均未与关联方进行银行间同业市场的债券(含回购)交易。6.4.10.4各关联方投资本基金的情况</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量(买/卖)合约市值公允价值变动ES2609S&P500EMINISep2631.0079,686,082.68536,744.51合计---536,744.51</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资761,935,642.2890.23其中：普通股748,519,242.3688.64存托凭证--优先股--房地产信托凭证13,416,399.921.592基金投资--3固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计75,157,689.488.908其他各项资产7,333,467.800.879合计844,426,799.56100.00注：上述股票投资包括可退替代款估值增值。7.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元<<<PAGE39>>>国泰标普500交易型开放式指数证券投资基金（QDII）2026年中期报告第39页共85页国家（地区）公允价值占基金资产净值比例（％）美国761,935,642.2890.31合计761,935,642.2890.317.3期末按行业分类的权益投资组合7.3.1期末指数投资按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例（％）信息技术291,731,172.4534.58金融90,253,510.9610.70通讯业务74,275,882.138.80非日常生活消费品71,238,499.568.44医疗保健68,225,776.418.09工业63,359,132.787.51日常消费品35,056,629.144.16能源22,862,180.922.71公用事业16,848,048.742.00原材料14,061,918.581.67房地产14,022,890.611.66合计761,935,642.289</div></details><details><summary>华夏ETF · 159655 <span class='dim'>（data/pdf/159655_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 97.66%、基金投资 0.00%、现金 2.21%、期货名义敞口 2.34%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.15%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：主份额：净值 6.51% / 基准 6.29%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：①支付基金管理人的基金管理人报酬按前一日基金资产净值0.60%的年费率计提，逐日累计至每月月底，按月支付。②基金管理人报酬计算公式为：日基金管理人报酬＝前一日基金资产净值×年费率/当年天数。<<<PAGE32>>>华夏标普500交易型开放式指数证券投资基金（QDII）2026年中期报告32③客户维护费是指基金管理人与基金销售机构约定的用以向基金销售机构支付客户服务及销售活动中产生的相关费用，该费用按照代销机构所代销基金的份额保有量作为基数进行计算，从基金管理人收取的基金管理费中列支，不属于从基金资产中列支的费用项目。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：①支付基金托管人的基金托管费按前一日基金资产净值0.15%的年费率计提，逐日累计至每月月底，按月支付。②基金托管费计算公式为：日基金托管费＝前一日基金资产净值×年费率/当年天数。</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量（买/卖）合约市值公允价值变动ESU6S&P500EMINIFUTSep263692,179,983.83967,773.62合计---967,773.62</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资3,845,102,260.5697.54其中：普通股3,777,415,804.2995.82存托凭证--优先股--房地产信托67,686,456.271.722基金投资--3固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计87,128,344.952.218其他各项资产9,976,285.300.259合计3,942,206,890.81100.00注：股票投资的公允价值包含可退替代款的估值增值。7.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（%）美国3,845,102,260.5697.66合计3,845,102,260.5697.66<<<PAGE40>>>华夏标普500交易型开放式指数证券投资基金（QDII）2026年中期报告407.3期末按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例（%）信息技术1,472,163,511.8237.39金融455,230,943.9311.56通信服务374,810,502.069.52非必需消费品360,483,680.359.16保健344,052,240.018.74工业319,481,984.508.11必需消费品176,857,903.114.49能源115,330,536.462.93公用事业85,021,043.942.16材料70,920,301.951.80房地产70,749,612.431.80合计3,845,102,260.5697.66注：以上分类采</div></details><details><summary>易方达LOF A · 161125 <span class='dim'>（data/pdf/161125_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 90.69%、基金投资 0.00%、现金 1.28%、期货名义敞口 4.32%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.8% + 托管费 0.2%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：易方达标普500指数（QDII-LOF）A：净值 6.13% / 基准 5.87%；易方达标普500指数（QDII-LOF）C：净值 5.94% / 基准 5.87%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：本基金的管理费按前一日基金资产净值的0.80%年费率计提。管理费的计算方法如下：H＝E×0.80%÷当年天数H为每日应计提的基金管理费E为前一日的基金资产净值基金管理费每日计提，按月支付。由基金管理人向基金托管人发送基金管理费划付指令，经基金托管人复核后于次月首日起3个工作日内从基金财产中一次性支付给基金管理人，若遇法定节假日、休息日或不可抗力致使无法按时支付的，支付日期顺延。<<<PAGE28>>>易方达标普500指数证券投资基金（LOF）2026年中期报告第28页共89页</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：本基金的托管费按前一日基金资产净值的0.20%的年费率计提。托管费的计算方法如下：H＝E×0.20%÷当年天数H为每日应计提的基金托管费E为前一日的基金资产净值基金托管费每日计提，按月支付。由基金管理人向基金托管人发送基金托管费划付指令，经基金托管人复核后于次月首日起3个工作日内从基金财产中一次性支付给基金托管人，若遇法定节假日、休息日或不可抗力致使无法按时支付的，支付日期顺延。</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量(买/卖)合约市值公允价值变动ESU6S&P500EMINIFUTSep262871,974,526.30491,182.00合计---491,182.00</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资1,511,791,206.4290.31其中：普通股1,485,293,077.3488.72存托凭证--优先股--房地产信托凭证26,498,129.081.582基金投资--3固定收益投资132,128,490.417.89其中：债券132,128,490.417.89资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--<<<PAGE41>>>易方达标普500指数证券投资基金（LOF）2026年中期报告第41页共89页6货币市场工具--7银行存款和结算备付金合计21,375,465.281.288其他各项资产8,761,201.640.529合计1,674,056,363.75100.007.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（％）美国1,511,791,206.4290.69合计1,511,791,206.4290.69注：1.国家（地区）类别根据其所在的证券交易所确定。2.ADR、GDR按照存托凭证本身挂牌的证券交易所确定。7.3期末按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例（％）能源45,168,120.752.71材料27,731,937.381.66工业133,843,522.048.03非必需消费品140,744,501.988.44必需消费品69,011,575.344.14保健134,359,952.228.06金融177,659,094.9910.66信息技术574,320,1</div></details><details><summary>博时ETF · 513500 <span class='dim'>（data/pdf/513500_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 95.83%、基金投资 0.00%、现金 3.73%、期货名义敞口 3.94%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.2%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：主份额：净值 6.22% / 基准 6.6%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：支付基金管理人博时基金的管理人报酬按前一日基金资产净值0.60%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝前一日基金资产净值×0.60%/当年天数。由于基金管理人不得对基金财产中持有的自身管理的基金部分收取管理费，但客户维护费的收取标准并不调减，可能出现净管理费为负值的情况。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：于本期及上年度可比期间，截至2025年1月26日止，支付基金托管人的托管费按前一日基金资产净值0.25%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值×0.25%/当年天数。自2025年1月27日起，支付基金托管人的托管费按前一日基金资产净值0.20%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值×0.20%/当年天数。6.4.9.3与关联方进行银行间同业市场的债券(含回购)交易无。6.4.9.4报告期内转融通证券出借业务发生重大关联交易事项的说明</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量(买/卖)合约市值公允价值变动ES2609CBTES2609368.00945,950,917.02-4,787,364.58合计----4,787,364.58</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资22,998,930,462.1895.76其中：普通股22,594,123,085.7294.07存托凭证--优先股--房地产信托凭证404,807,376.461.692基金投资--3固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--<<<PAGE41>>>博时标普500交易型开放式指数证券投资基金2026年中期报告37期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计896,126,507.663.738其他各项资产122,791,459.450.519合计24,017,848,429.29100.007.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（％）美国22,998,930,462.1895.83合计22,998,930,462.1895.837.3期末按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例（％）能源689,736,909.272.87公用事业508,457,868.802.12房地产423,128,133.451.76原材料424,129,554.541.77工业1,914,102,277.857.98非日常生活消费品2,155,840,791.688.98日常消费品1,057,677,026.274.41医疗保健2,057,638,457.598.57金融2,722,495,645.5911.34信息技术8,804,205,020.2136.69电信业务2,241,518,776.939.34合计22,998,930,462.1895.83注：以上</div></details><details><summary>南方ETF · 513650 <span class='dim'>（data/pdf/513650_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 98.32%、基金投资 0.00%、现金 1.86%、期货名义敞口 1.60%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 0.6% + 托管费 0.15%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：主份额：净值 6.21% / 基准 6.16%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：支付基金管理人南方基金的管理人报酬按前一日基金资产净值0.60%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日管理人报酬＝前一日基金资产净值×0.60%÷当年天数。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：支付基金托管人的托管费按前一日基金资产净值0.15%的年费率计提，逐日累计至每月月底，按月支付。其计算公式为：日托管费＝前一日基金资产净值×0.15%÷当年天数。<<<PAGE29>>>南方标普500交易型开放式指数证券投资基金（QDII）2026年中期报告第28页共95页</div><p><b>期货合约原文</b></p><div class='rawtext'>期末基金持有的期货合约情况单位：人民币元代码名称持仓量（买/卖）合约市值公允价值变动ES2609ES260948.00123,347,104.91797,437.20合计797,437.20</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资7,564,494,126.8597.96其中：普通股7,432,092,880.9196.24存托凭证--房地产信托凭证132,401,245.941.712基金投资--3固定收益投资--其中：债券--资产支持证券--4金融衍生品投资--其中：远期--期货--<<<PAGE40>>>南方标普500交易型开放式指数证券投资基金（QDII）2026年中期报告第39页共95页期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计143,283,178.311.868其他各项资产14,373,182.600.199合计7,722,150,487.76100.00注：上表中的股票投资项含可退替代款估值增值，而行业分类的合计项中不含可退替代款估值增值。7.2期末在各个国家（地区）证券市场的权益投资分布国家（地区）公允价值（人民币元）占基金资产净值比例（％）美国7,564,494,126.8598.32合计7,564,494,126.8598.327.3期末按行业分类的权益投资组合7.3.1期末指数投资按行业分类的权益投资组合行业类别公允价值（人民币元）占基金资产净值比例（％）能源228,310,434.532.97材料142,598,707.471.85工业684,730,032.588.90非必需消费品675,915,142.358.79必需消费品345,616,775.314.49医疗保健669,145,850.508.70金融899,600,477.9311.69科技2,814,397,209.4436.58通讯799,666,799.1510.39公用事业166,</div></details><details><summary>长信等权 · 519981 <span class='dim'>（data/pdf/519981_semi.pdf）</span></summary><p><b>资产组合</b>（占净值）：权益 85.95%、基金投资 0.00%、现金 3.38%、期货名义敞口 0.00%</p><p><b>穿透说明</b>：直接持有股票，无目标基金层</p><p><b>费率</b>：本层管理费 1.1% + 托管费 0.2%；单层收费，直接持有股票/债券。豁免标记：管理费 无／托管费 无</p><p><b>各份额半年收益</b>：主份额：净值 10.05% / 基准 10.33%</p><p><b>管理费附注原文</b></p><div class='rawtext'>注：基金管理费按前一日的基金资产净值的1.10%的年费率计提。计算方法如下：H=E×基金管理费年费率/当年天数H为每日应计提的基金管理费E为前一日的基金资产净值<<<PAGE28>>>长信标普100等权重指数（QDII）2026年中期报告第28页共56页基金管理费每日计提,逐日累计至每月月末，按月支付。</div><p><b>托管费附注原文</b></p><div class='rawtext'>注：1、根据《长信基金管理有限责任公司关于调整长信美国标准普尔100等权重指数增强型证券投资基金托管费率并修改基金合同等事宜的公告》，自2025年2月14日起，本基金的基金托管费由0.30%年费率调整为0.20%年费率。2、计算方法如下：H=E×基金托管费年费率/当年天数H为每日应计提的基金托管费E为前一日的基金资产净值基金托管费每日计提，逐日累计至每月月末，按月支付。6.4.10.3与关联方进行银行间同业市场的债券(含回购)交易本基金本报告期及上年度可比期间均未与关联方进行银行间同业市场的债券（含回购）交易。6.4.10.4报告期内转融通证券出借业务发生重大关联交易事项的说明</div><p><b>资产组合原文</b></p><div class='rawtext'>期末基金资产组合情况金额单位：人民币元序号项目金额占基金总资产的比例（%）1权益投资1,473,275,856.7082.68其中：普通股1,466,126,836.3882.28存托凭证7,149,020.320.40优先股--房地产信托凭证--2基金投资--3固定收益投资226,083,478.4412.69其中：债券226,083,478.4412.69资产支持证券--4金融衍生品投资--其中：远期--期货--期权--权证--5买入返售金融资产--其中：买断式回购的买入返售金融资产--6货币市场工具--7银行存款和结算备付金合计57,973,824.733.258其他各项资产24,530,982.791.389合计1,781,864,142.66100.00注：本基金本报告期末未通过港股通交易机制投资港股。本基金本报告期末未参与转融通证券出借业务。7.2期末在各个国家（地区）证券市场的权益投资分布金额单位：人民币元国家（地区）公允价值占基金资产净值比例（%）美国1,473,275,856.7085.95合计1,473,275,856.7085.957.3期末按行业分类的权益投资组合7.3.1期末指数投资按行业分类的权益投资组合金额单位：人民币元行业类别公允价值占基金资产净值比例(%)原材料13,420,300.750.78非日常生活消费品121,583,019.307.09<<<PAGE38>>>长信标普100等权重指数（QDII）2026年中期报告第38页共56页日常消费品114,249,742.156.67能源34,860,630.222.03金融205,674,461.2212.00医疗保健</div></details>
+</div>
+
+<h2><span class="num">03</span>未能解释的部分</h2>
+<p>按视频作者的提醒，指数基金的残余差异往往来自中报看不到的东西。以下四项本项目无法从公开中报中确证，如实列出：</p>
+<div class="grid2">
+  <div class="mini">
+    <div class="t">① 联接基金跑赢自家目标 ETF</div>
+    <div class="s">国泰联接 A 半年 <b>6.90%</b>，而其持有的国泰标普500ETF 只有 <b>6.27%</b>（+0.59pp）；
+    华夏联接 A <b>6.81%</b> vs 华夏 ETF <b>6.51%</b>（+0.28pp）；博时联接则是 −0.09pp。
+    联接持有 ETF 在数学上不可能超越 ETF 本身，除非估值口径不同。
+    候选解释：联接按目标 ETF 的<b>收盘价</b>而非净值估值，QDII ETF 长期溢价，
+    溢价路径变化会进出联接净值。但中报不披露估值方法与持仓明细，无法确证。</div>
+  </div>
+  <div class="mini">
+    <div class="t">② 基准口径差 0.44pp</div>
+    <div class="s">博时 ETF 基准半年 6.60%，国泰/南方 ETF 只有 6.16%。
+    可能与 NTR / 价格指数、估值汇率 / 人民币汇率、以及指数收益的起止时点有关，
+    但中报只给结论不给计算明细，无法拆分。</div>
+  </div>
+  <div class="mini">
+    <div class="t">③ 缺口与综合费率对不上</div>
+    <div class="s">博时联接 A 半年缺口约 0.15pp（年化 0.30%），但其加权综合费率为 0.86%／年。
+    差额可能来自期内日均仓位高于期末、现金利息收入、期货展期收益，以及口径问题。</div>
+  </div>
+  <div class="mini">
+    <div class="t">④ 参与率只有期末一个时点</div>
+    <div class="s">中报只披露 6 月 30 日的持仓。规模半年翻倍的产品，期内平均参与率可能显著低于期末值，
+    用期末值做理论收益会低估缺口。「反推平均参与率」是间接替代，但同样混入了费率与口径误差。</div>
+  </div>
+</div>
+
+<h2><span class="num">04</span>复现</h2>
+<div class="tablebox"><table>
+<thead><tr><th style="text-align:left">步骤</th><th style="text-align:left">命令</th><th style="text-align:left">产出</th></tr></thead>
+<tbody>
+<tr><td style="text-align:left">1. 下载定期报告</td><td style="text-align:left"><code>python scripts/fetch_reports.py</code></td><td style="text-align:left"><code>data/reports_index.json</code>、<code>data/pdf/*.pdf</code></td></tr>
+<tr><td style="text-align:left">2. 解析中报</td><td style="text-align:left"><code>python scripts/parse_reports.py</code></td><td style="text-align:left"><code>data/raw_reports.json</code></td></tr>
+<tr><td style="text-align:left">3. 抓行情与净值</td><td style="text-align:left"><code>python scripts/fetch_quotes.py</code></td><td style="text-align:left"><code>data/quotes_cache.json</code>、<code>data/nav_per_share.json</code></td></tr>
+<tr><td style="text-align:left">4. 穿透计算</td><td style="text-align:left"><code>python scripts/analyze.py</code></td><td style="text-align:left"><code>data/analysis.json</code></td></tr>
+<tr><td style="text-align:left">5. 生成报告</td><td style="text-align:left"><code>python scripts/build_site.py</code></td><td style="text-align:left"><code>index.html</code></td></tr>
+</tbody></table></div>
+<div class="note gray">
+  依赖：<code>pypdf</code>。数据源全部为公开接口：天天基金
+  <code>api.fund.eastmoney.com</code> / <code>pdf.dfcfw.com</code>、腾讯行情 <code>web.ifzq.gtimg.cn</code>。
+  净值增长率与场内价格已用独立接口交叉验证一致。
+</div>
+
+<footer>
+  <p>数据来源：各基金 2026 年中期报告（截至 2026-06-30），场内行情与份额净值取自公开接口。
+  方法论参考：B 站 @林怀瑾LHJ《同样跟踪纳斯达克 100，为什么国泰场外在前列？》（BV1rdet6MEXA）。</p>
+  <p>本文仅作数据整理与结构化对比，不构成任何投资建议。所有"理论收益""缺口"均为基于公开中报的推算，
+  受口径差异影响，请当作区间参考。</p>
+  <p>报告生成时间：2026-09-22</p>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll('.tab').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    document.getElementById(b.dataset.t).classList.add('on');
+  });
+});
+// 表头点击排序
+document.querySelectorAll('table').forEach(function(tb){
+  var ths=tb.querySelectorAll('thead th');
+  ths.forEach(function(th,idx){
+    th.addEventListener('click',function(){
+      var body=tb.tBodies[0];
+      var rows=Array.prototype.slice.call(body.rows);
+      var dir=th.dataset.dir==='asc'?-1:1;
+      th.dataset.dir=dir===1?'asc':'desc';
+      var num=function(tr){
+        var c=tr.cells[idx]; if(!c) return 0;
+        var v=c.getAttribute('data-v');
+        if(v!==null&&v!==undefined&&v!=='') return parseFloat(v);
+        var m=c.textContent.replace(/[,%＋+]/g,'').match(/-?\d+(\.\d+)?/);
+        return m?parseFloat(m[0]):0;
+      };
+      rows.sort(function(a,b){return (num(a)-num(b))*dir});
+      rows.forEach(function(r){body.appendChild(r)});
+    });
+  });
+});
+</script>
+</body>
+</html>
