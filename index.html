@@ -167,7 +167,8 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 </tbody></table></div>
 
 <div class="tabs">
-  <button class="tab on" data-t="p1">参与率与费率</button>
+  <button class="tab on" data-t="p7">推荐排名（量化打分）</button>
+  <button class="tab" data-t="p1">参与率与费率</button>
   <button class="tab" data-t="p2">收益与跟踪缺口</button>
   <button class="tab" data-t="p3">基准口径对照</button>
   <button class="tab" data-t="p4">规模变化</button>
@@ -175,7 +176,95 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   <button class="tab" data-t="p6">原始数据与出处</button>
 </div>
 
-<div class="panel on" id="p1">
+<div class="panel on" id="p7">
+  <p>五个维度加权打分，满分 100。<b>限购额度未计入评分</b>——按需求只看基金本身的质量；
+  申购状态只在最后一列做标注，供实操参考。</p>
+
+  <div class="tablebox"><table id="t7">
+  <thead><tr>
+    <th>#</th><th>产品</th><th>类型</th><th>总分</th>
+    <th>长期收益兑现<br><span class="dim" style="font-weight:400">/40</span></th>
+    <th>真实敞口<br><span class="dim" style="font-weight:400">/20</span></th>
+    <th>持有成本<br><span class="dim" style="font-weight:400">/20</span></th>
+    <th>规模与稳定<br><span class="dim" style="font-weight:400">/12</span></th>
+    <th>买入摩擦<br><span class="dim" style="font-weight:400">/8</span></th>
+    <th>三年</th><th>一年</th><th>半年</th>
+    <th>综合费率</th><th>穿透后参与率</th>
+    <th>排名区间<br><span class="dim" style="font-weight:400">稳健性</span></th>
+    <th>申购状态<br><span class="dim" style="font-weight:400">仅标注</span></th>
+  </tr></thead><tbody><tr><td data-v="1"><b style="color:var(--green)">1</b></td><td class="name">华夏ETF<span class="code">159655</span></td><td><span class="chip etf">场内ETF</span></td><td data-v="91.04"><b>91.04</b></td><td data-v="37.52"><div class="bar g"><i style="width:93.8%"></i></div><span class="dim" style="font-size:11.5px">37.5</span></td><td data-v="20.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">20.0</span></td><td data-v="14.29"><div class="bar g"><i style="width:71.4%"></i></div><span class="dim" style="font-size:11.5px">14.3</span></td><td data-v="11.38"><div class="bar g"><i style="width:94.8%"></i></div><span class="dim" style="font-size:11.5px">11.4</span></td><td data-v="7.86"><div class="bar g"><i style="width:98.3%"></i></div><span class="dim" style="font-size:11.5px">7.9</span></td><td data-v="58.35">58.35%</td><td data-v="14.76">14.76%</td><td data-v="6.51">6.51%</td><td data-v="0.750">0.75%</td><td data-v="100.00">100.00%</td><td data-v="2">1–2</td><td><span class="chip etf">场内买入</span></td></tr><tr><td data-v="2"><b style="color:var(--green)">2</b></td><td class="name">博时ETF<span class="code">513500</span></td><td><span class="chip etf">场内ETF</span></td><td data-v="90.08"><b>90.08</b></td><td data-v="40.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">40.0</span></td><td data-v="19.25"><div class="bar g"><i style="width:96.2%"></i></div><span class="dim" style="font-size:11.5px">19.2</span></td><td data-v="11.43"><div class="bar g"><i style="width:57.1%"></i></div><span class="dim" style="font-size:11.5px">11.4</span></td><td data-v="11.62"><div class="bar g"><i style="width:96.9%"></i></div><span class="dim" style="font-size:11.5px">11.6</span></td><td data-v="7.79"><div class="bar g"><i style="width:97.3%"></i></div><span class="dim" style="font-size:11.5px">7.8</span></td><td data-v="59.53">59.53%</td><td data-v="15.11">15.11%</td><td data-v="6.22">6.22%</td><td data-v="0.800">0.80%</td><td data-v="99.77">99.77%</td><td data-v="3">1–3 ⚠</td><td><span class="chip etf">场内买入</span></td></tr><tr><td data-v="3"><b style="color:var(--green)">3</b></td><td class="name">南方ETF<span class="code">513650</span></td><td><span class="chip etf">场内ETF</span></td><td data-v="87.45"><b>87.45</b></td><td data-v="36.77"><div class="bar g"><i style="width:91.9%"></i></div><span class="dim" style="font-size:11.5px">36.8</span></td><td data-v="19.74"><div class="bar g"><i style="width:98.7%"></i></div><span class="dim" style="font-size:11.5px">19.7</span></td><td data-v="14.29"><div class="bar g"><i style="width:71.4%"></i></div><span class="dim" style="font-size:11.5px">14.3</span></td><td data-v="8.78"><div class="bar g"><i style="width:73.2%"></i></div><span class="dim" style="font-size:11.5px">8.8</span></td><td data-v="7.88"><div class="bar g"><i style="width:98.5%"></i></div><span class="dim" style="font-size:11.5px">7.9</span></td><td data-v="58.20">58.20%</td><td data-v="15.12">15.12%</td><td data-v="6.21">6.21%</td><td data-v="0.750">0.75%</td><td data-v="99.92">99.92%</td><td data-v="3">2–3</td><td><span class="chip etf">场内买入</span></td></tr><tr><td data-v="4"><b style="color:var(--green)">4</b></td><td class="name">国泰ETF<span class="code">159612</span></td><td><span class="chip etf">场内ETF</span></td><td data-v="83.98"><b>83.98</b></td><td data-v="35.50"><div class="bar g"><i style="width:88.7%"></i></div><span class="dim" style="font-size:11.5px">35.5</span></td><td data-v="19.19"><div class="bar g"><i style="width:96.0%"></i></div><span class="dim" style="font-size:11.5px">19.2</span></td><td data-v="14.29"><div class="bar g"><i style="width:71.4%"></i></div><span class="dim" style="font-size:11.5px">14.3</span></td><td data-v="7.28"><div class="bar g"><i style="width:60.6%"></i></div><span class="dim" style="font-size:11.5px">7.3</span></td><td data-v="7.73"><div class="bar g"><i style="width:96.6%"></i></div><span class="dim" style="font-size:11.5px">7.7</span></td><td data-v="57.59">57.59%</td><td data-v="15.07">15.07%</td><td data-v="6.27">6.27%</td><td data-v="0.750">0.75%</td><td data-v="99.76">99.76%</td><td data-v="4">4–4</td><td><span class="chip etf">场内买入</span></td></tr><tr><td data-v="5"><b>5</b></td><td class="name">摩根A<span class="code">017641</span></td><td><span class="chip direct">QDII直投</span></td><td data-v="57.95"><b>57.95</b></td><td data-v="20.87"><div class="bar g"><i style="width:52.2%"></i></div><span class="dim" style="font-size:11.5px">20.9</span></td><td data-v="0.00"><div class="bar g"><i style="width:0.0%"></i></div><span class="dim" style="font-size:11.5px">0.0</span></td><td data-v="20.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">20.0</span></td><td data-v="9.08"><div class="bar g"><i style="width:75.7%"></i></div><span class="dim" style="font-size:11.5px">9.1</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="51.59">51.59%</td><td data-v="14.62">14.62%</td><td data-v="6.60">6.60%</td><td data-v="0.650">0.65%</td><td data-v="94.03">94.03%</td><td data-v="5">5–5</td><td><span class="chip fof">限制大额申购</span></td></tr><tr><td data-v="6"><b>6</b></td><td class="name">博时联接A<span class="code">050025</span></td><td><span class="chip link">联接</span></td><td data-v="54.14"><b>54.14</b></td><td data-v="23.20"><div class="bar g"><i style="width:58.0%"></i></div><span class="dim" style="font-size:11.5px">23.2</span></td><td data-v="3.00"><div class="bar g"><i style="width:15.0%"></i></div><span class="dim" style="font-size:11.5px">3.0</span></td><td data-v="8.11"><div class="bar g"><i style="width:40.5%"></i></div><span class="dim" style="font-size:11.5px">8.1</span></td><td data-v="11.83"><div class="bar g"><i style="width:98.6%"></i></div><span class="dim" style="font-size:11.5px">11.8</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="54.11">54.11%</td><td data-v="14.64">14.64%</td><td data-v="6.12">6.12%</td><td data-v="0.858">0.86%</td><td data-v="94.93">94.93%</td><td data-v="6">6–6</td><td><span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span></td></tr><tr><td data-v="7"><b>7</b></td><td class="name">华夏联接A<span class="code">018064</span></td><td><span class="chip link">联接</span></td><td data-v="50.24"><b>50.24</b></td><td data-v="19.03"><div class="bar g"><i style="width:47.6%"></i></div><span class="dim" style="font-size:11.5px">19.0</span></td><td data-v="3.48"><div class="bar g"><i style="width:17.4%"></i></div><span class="dim" style="font-size:11.5px">3.5</span></td><td data-v="10.52"><div class="bar g"><i style="width:52.6%"></i></div><span class="dim" style="font-size:11.5px">10.5</span></td><td data-v="9.21"><div class="bar g"><i style="width:76.7%"></i></div><span class="dim" style="font-size:11.5px">9.2</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="50.88">50.88%</td><td data-v="14.31">14.31%</td><td data-v="6.81">6.81%</td><td data-v="0.816">0.82%</td><td data-v="95.07">95.07%</td><td data-v="7">7–7</td><td><span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span></td></tr><tr><td data-v="8"><span class="dim">8</span></td><td class="name">易方达LOF A<span class="code">161125</span></td><td><span class="chip fof">QDII-LOF</span></td><td data-v="45.31"><b>45.31</b></td><td data-v="22.47"><div class="bar g"><i style="width:56.2%"></i></div><span class="dim" style="font-size:11.5px">22.5</span></td><td data-v="3.28"><div class="bar g"><i style="width:16.4%"></i></div><span class="dim" style="font-size:11.5px">3.3</span></td><td data-v="0.00"><div class="bar g"><i style="width:0.0%"></i></div><span class="dim" style="font-size:11.5px">0.0</span></td><td data-v="11.56"><div class="bar g"><i style="width:96.3%"></i></div><span class="dim" style="font-size:11.5px">11.6</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="54.38">54.38%</td><td data-v="14.39">14.39%</td><td data-v="6.13">6.13%</td><td data-v="1.000">1.00%</td><td data-v="95.01">95.01%</td><td data-v="10">8–10 ⚠</td><td><span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span></td></tr><tr><td data-v="9"><span class="dim">9</span></td><td class="name">天弘FOF A<span class="code">007721</span></td><td><span class="chip fof">QDII-FOF</span></td><td data-v="32.24"><b>32.24</b></td><td data-v="0.00"><div class="bar g"><i style="width:0.0%"></i></div><span class="dim" style="font-size:11.5px">0.0</span></td><td data-v="3.88"><div class="bar g"><i style="width:19.4%"></i></div><span class="dim" style="font-size:11.5px">3.9</span></td><td data-v="9.02"><div class="bar g"><i style="width:45.1%"></i></div><span class="dim" style="font-size:11.5px">9.0</span></td><td data-v="11.34"><div class="bar g"><i style="width:94.5%"></i></div><span class="dim" style="font-size:11.5px">11.3</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="48.58">48.58%</td><td data-v="13.85">13.85%</td><td data-v="5.55">5.55%</td><td data-v="0.842">0.84%</td><td data-v="95.19">95.19%</td><td data-v="10">9–10</td><td><span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span></td></tr><tr><td data-v="10"><span class="dim">10</span></td><td class="name">国泰联接A<span class="code">017028</span></td><td><span class="chip link">联接</span></td><td data-v="32.17"><b>32.17</b></td><td data-v="1.98"><div class="bar g"><i style="width:5.0%"></i></div><span class="dim" style="font-size:11.5px">2.0</span></td><td data-v="1.82"><div class="bar g"><i style="width:9.1%"></i></div><span class="dim" style="font-size:11.5px">1.8</span></td><td data-v="12.06"><div class="bar g"><i style="width:60.3%"></i></div><span class="dim" style="font-size:11.5px">12.1</span></td><td data-v="8.31"><div class="bar g"><i style="width:69.3%"></i></div><span class="dim" style="font-size:11.5px">8.3</span></td><td data-v="8.00"><div class="bar g"><i style="width:100.0%"></i></div><span class="dim" style="font-size:11.5px">8.0</span></td><td data-v="49.41">49.41%</td><td data-v="11.92">11.92%</td><td data-v="6.90">6.90%</td><td data-v="0.789">0.79%</td><td data-v="94.57">94.57%</td><td data-v="10">8–10 ⚠</td><td><span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span></td></tr></tbody></table></div>
+
+  <div class="note blue">
+    <b>分数怎么读：</b>分数是<b>组内相对分</b>，不是绝对质量。某个维度上组内最好的得满分、最差的得 0 分，
+    再按权重加权。所以 0 分只代表"在这 10 只里最差"，不代表"很差"。
+  </div>
+
+  <h3>评分维度与权重</h3>
+  <div class="tablebox"><table>
+  <thead><tr><th style="text-align:left">维度</th><th>权重</th><th style="text-align:left">指标</th><th style="text-align:left">归一化方式</th></tr></thead>
+  <tbody>
+    <tr><td style="text-align:left"><b>长期收益兑现</b></td><td>40</td>
+        <td style="text-align:left">净值增长率：<b>三年 50% + 一年 30% + 半年 20%</b>，各自年化后加权</td>
+        <td style="text-align:left">组内 min-max</td></tr>
+    <tr><td style="text-align:left"><b>真实敞口</b></td><td>20</td>
+        <td style="text-align:left">穿透后参与率（联接层 × 目标 ETF 参与率 + 本层期货名义敞口）</td>
+        <td style="text-align:left">组内 min-max</td></tr>
+    <tr><td style="text-align:left"><b>持有成本</b></td><td>20</td>
+        <td style="text-align:left">加权综合费率（目标 ETF 费率 + 本层费率 × 非 ETF 权重）</td>
+        <td style="text-align:left">组内 min-max（反向）</td></tr>
+    <tr><td style="text-align:left"><b>规模与稳定</b></td><td>12</td>
+        <td style="text-align:left">规模 7 分（≥20 亿 7 分 / 5–20 亿 5.5 分 / 1–5 亿 4 分 / &lt;1 亿 2 分，档内线性）
+        ＋ 稳定 5 分（半年规模变化 ±100% 扣光）</td>
+        <td style="text-align:left">分档绝对分</td></tr>
+    <tr><td style="text-align:left"><b>买入摩擦</b></td><td>8</td>
+        <td style="text-align:left">场内：1 ÷ (1 + 期末溢价率)；场外无溢价 = 满分</td>
+        <td style="text-align:left">绝对刻度</td></tr>
+  </tbody></table></div>
+
+  <div class="note gray">
+    <b>为什么收益维度只用净值增长率、不用"超额收益"？</b>
+    因为这些产品<b>跟踪同一个指数、处在同一区间、同一币种</b>，净值增长率本身就完全可比；
+    而各家的"业绩比较基准"口径并不统一（半年基准收益从 5.86% 到 6.60%），
+    用 ①−③ 反而会把口径差异算成基金能力，不公平。
+  </div>
+
+  <h3>稳健性检验：换一套权重，排名会不会变？</h3>
+  <p>用三组替代权重重算，给出每只产品在不同权重下的排名区间。<b>区间越窄，说明结论越不依赖权重的主观设定。</b></p>
+  <div class="tablebox"><table id="t8">
+  <thead><tr><th>产品</th><th>基准权重排名</th><th>收益优先</th><th>成本优先</th><th>结构优先</th><th>排名区间</th><th style="text-align:left">结论</th></tr></thead>
+  <tbody><tr><td class="name">华夏ETF<span class="code">159655</span></td><td data-v="1"><b>1</b></td><td data-v="2">2</td><td data-v="1">1</td><td data-v="1">1</td><td data-v="2">1–2</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">博时ETF<span class="code">513500</span></td><td data-v="2"><b>2</b></td><td data-v="1">1</td><td data-v="3">3</td><td data-v="2">2</td><td data-v="3">1–3</td><td style="text-align:left" class="lo">对权重敏感，需谨慎</td></tr><tr><td class="name">南方ETF<span class="code">513650</span></td><td data-v="3"><b>3</b></td><td data-v="3">3</td><td data-v="2">2</td><td data-v="3">3</td><td data-v="3">2–3</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">国泰ETF<span class="code">159612</span></td><td data-v="4"><b>4</b></td><td data-v="4">4</td><td data-v="4">4</td><td data-v="4">4</td><td data-v="4">4–4</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">摩根A<span class="code">017641</span></td><td data-v="5"><b>5</b></td><td data-v="5">5</td><td data-v="5">5</td><td data-v="5">5</td><td data-v="5">5–5</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">博时联接A<span class="code">050025</span></td><td data-v="6"><b>6</b></td><td data-v="6">6</td><td data-v="6">6</td><td data-v="6">6</td><td data-v="6">6–6</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">华夏联接A<span class="code">018064</span></td><td data-v="7"><b>7</b></td><td data-v="7">7</td><td data-v="7">7</td><td data-v="7">7</td><td data-v="7">7–7</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">易方达LOF A<span class="code">161125</span></td><td data-v="8"><b>8</b></td><td data-v="8">8</td><td data-v="10">10</td><td data-v="8">8</td><td data-v="10">8–10</td><td style="text-align:left" class="lo">对权重敏感，需谨慎</td></tr><tr><td class="name">天弘FOF A<span class="code">007721</span></td><td data-v="9"><b>9</b></td><td data-v="10">10</td><td data-v="9">9</td><td data-v="9">9</td><td data-v="10">9–10</td><td style="text-align:left" class="hi">权重不敏感，结论稳</td></tr><tr><td class="name">国泰联接A<span class="code">017028</span></td><td data-v="10"><b>10</b></td><td data-v="9">9</td><td data-v="8">8</td><td data-v="10">10</td><td data-v="10">8–10</td><td style="text-align:left" class="lo">对权重敏感，需谨慎</td></tr></tbody></table></div>
+  <div class="legend">
+    <span>收益优先 = 收益 55 / 敞口 15 / 成本 15 / 规模 10 / 摩擦 5</span>
+    <span>成本优先 = 收益 25 / 敞口 15 / 成本 40 / 规模 12 / 摩擦 8</span>
+    <span>结构优先 = 收益 30 / 敞口 35 / 成本 20 / 规模 10 / 摩擦 5</span>
+  </div>
+
+  <h3>使用这几张表之前，请先看这四条</h3>
+  <div class="grid2">
+    <div class="mini">
+      <div class="t">① 只对"长期持有"有意义</div>
+      <div class="s">评分用的是 A 类份额（长期持有费率更优）。若持有期在 1–2 年内，
+      C 类（免申购费、按日计提销售服务费）通常更划算，排名需要重算。</div>
+    </div>
+    <div class="mini">
+      <div class="t">② 场内 ETF 与场外联接不是同一类工具</div>
+      <div class="s">场内需要证券账户、按实时价成交、可 T+0；场外用基金账户、按净值确认、有申赎费。
+      分数高不等于适合你——取决于你用什么账户、怎么交易。</div>
+    </div>
+    <div class="mini">
+      <div class="t">③ 半年数据噪声很大</div>
+      <div class="s">国泰联接 A 半年 6.90% 高于它自己持有的国泰 ETF（6.27%），这在数学上不该发生，
+      说明短期净值受估值口径影响，<b>不要用半年排名做决定</b>。所以三年占 50% 权重。</div>
+    </div>
+    <div class="mini">
+      <div class="t">④ 溢价是动态的</div>
+      <div class="s">买入摩擦维度用的是 2026-06-30 的期末溢价快照。场内 QDII ETF 的溢价随额度和行情波动，
+      实际下单前应看当日实时溢价率，溢价高时改走场外或等回落。</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p1">
   <p><b>参与率</b>衡量的是"基金净资产里有多少真的暴露在指数上"。名义参与率只算本层持仓；
   <b>穿透后参与率</b>再乘一层目标 ETF 自己的参与率——因为 ETF 自己也不是满仓。</p>
   <div class="tablebox"><table id="t1">

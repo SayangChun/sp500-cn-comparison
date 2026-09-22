@@ -228,11 +228,16 @@ def clean_label(label):
     return s.strip("：: ")
 
 
+PERIOD_RE = re.compile(r"(过去三个月|过去六个月|过去一年|过去三年|过去五年|过去七年|过去十年)"
+                       r"[^\n]{0,170}")
+
+
 def parse_returns(s):
-    """3.2.1 份额净值增长率及其与同期业绩比较基准收益率的比较（按份额分列）
+    """3.2.1 份额净值增长率及其与同期业绩比较基准收益率的比较（按份额分列）。
 
     份额名在「阶段」表头之前，长度不定，所以取「阶段」往前 120 字符再清洗，
-    比用定长捕获组可靠。
+    比用定长捕获组可靠。每个份额抓全部区间（三个月/六个月/一年/三年…），
+    其中六个月同时提升为 nav_6m / bench_6m / diff_6m 便于下游直接取用。
     """
     i = s.find("份额净值增长率及其与同期业绩比较基准")
     if i < 0:
@@ -247,7 +252,7 @@ def parse_returns(s):
 
     marks = [(m.start(), label_before(m.start())) for m in CLASS_TAIL.finditer(blk)]
     out = {}
-    for m in re.finditer(r"过去六个月[^\n]{0,160}", blk):
+    for m in PERIOD_RE.finditer(blk):
         p = m.start()
         label = None
         for mp, name in marks:
@@ -256,11 +261,22 @@ def parse_returns(s):
         if not label:
             continue
         nums = re.findall(r"-?\d+\.\d+%", m.group(0))
-        if len(nums) >= 5:
-            out[label] = {"nav_6m": float(nums[0].rstrip("%")),
-                          "bench_6m": float(nums[2].rstrip("%")),
-                          "diff_6m": float(nums[4].rstrip("%"))}
-    return out
+        if len(nums) < 5:
+            continue
+        rec = out.setdefault(label, {"periods": {}})
+        rec["periods"][m.group(1)] = {
+            "nav": float(nums[0].rstrip("%")),
+            "std": float(nums[1].rstrip("%")),
+            "bench": float(nums[2].rstrip("%")),
+            "diff": float(nums[4].rstrip("%")),
+        }
+    for label, rec in out.items():
+        p6 = rec["periods"].get("过去六个月")
+        if p6:
+            rec["nav_6m"] = p6["nav"]
+            rec["bench_6m"] = p6["bench"]
+            rec["diff_6m"] = p6["diff"]
+    return {k: v for k, v in out.items() if "nav_6m" in v}
 
 
 def parse_benchmark_def(s):

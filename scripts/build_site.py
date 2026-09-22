@@ -179,7 +179,8 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 </tbody></table></div>
 
 <div class="tabs">
-  <button class="tab on" data-t="p1">参与率与费率</button>
+  <button class="tab on" data-t="p7">推荐排名（量化打分）</button>
+  <button class="tab" data-t="p1">参与率与费率</button>
   <button class="tab" data-t="p2">收益与跟踪缺口</button>
   <button class="tab" data-t="p3">基准口径对照</button>
   <button class="tab" data-t="p4">规模变化</button>
@@ -187,7 +188,95 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   <button class="tab" data-t="p6">原始数据与出处</button>
 </div>
 
-<div class="panel on" id="p1">
+<div class="panel on" id="p7">
+  <p>五个维度加权打分，满分 100。<b>限购额度未计入评分</b>——按需求只看基金本身的质量；
+  申购状态只在最后一列做标注，供实操参考。</p>
+
+  <div class="tablebox"><table id="t7">
+  <thead><tr>
+    <th>#</th><th>产品</th><th>类型</th><th>总分</th>
+    <th>长期收益兑现<br><span class="dim" style="font-weight:400">/40</span></th>
+    <th>真实敞口<br><span class="dim" style="font-weight:400">/20</span></th>
+    <th>持有成本<br><span class="dim" style="font-weight:400">/20</span></th>
+    <th>规模与稳定<br><span class="dim" style="font-weight:400">/12</span></th>
+    <th>买入摩擦<br><span class="dim" style="font-weight:400">/8</span></th>
+    <th>三年</th><th>一年</th><th>半年</th>
+    <th>综合费率</th><th>穿透后参与率</th>
+    <th>排名区间<br><span class="dim" style="font-weight:400">稳健性</span></th>
+    <th>申购状态<br><span class="dim" style="font-weight:400">仅标注</span></th>
+  </tr></thead><tbody>__ROWS_P7__</tbody></table></div>
+
+  <div class="note blue">
+    <b>分数怎么读：</b>分数是<b>组内相对分</b>，不是绝对质量。某个维度上组内最好的得满分、最差的得 0 分，
+    再按权重加权。所以 0 分只代表"在这 10 只里最差"，不代表"很差"。
+  </div>
+
+  <h3>评分维度与权重</h3>
+  <div class="tablebox"><table>
+  <thead><tr><th style="text-align:left">维度</th><th>权重</th><th style="text-align:left">指标</th><th style="text-align:left">归一化方式</th></tr></thead>
+  <tbody>
+    <tr><td style="text-align:left"><b>长期收益兑现</b></td><td>40</td>
+        <td style="text-align:left">净值增长率：<b>三年 50% + 一年 30% + 半年 20%</b>，各自年化后加权</td>
+        <td style="text-align:left">组内 min-max</td></tr>
+    <tr><td style="text-align:left"><b>真实敞口</b></td><td>20</td>
+        <td style="text-align:left">穿透后参与率（联接层 × 目标 ETF 参与率 + 本层期货名义敞口）</td>
+        <td style="text-align:left">组内 min-max</td></tr>
+    <tr><td style="text-align:left"><b>持有成本</b></td><td>20</td>
+        <td style="text-align:left">加权综合费率（目标 ETF 费率 + 本层费率 × 非 ETF 权重）</td>
+        <td style="text-align:left">组内 min-max（反向）</td></tr>
+    <tr><td style="text-align:left"><b>规模与稳定</b></td><td>12</td>
+        <td style="text-align:left">规模 7 分（≥20 亿 7 分 / 5–20 亿 5.5 分 / 1–5 亿 4 分 / &lt;1 亿 2 分，档内线性）
+        ＋ 稳定 5 分（半年规模变化 ±100% 扣光）</td>
+        <td style="text-align:left">分档绝对分</td></tr>
+    <tr><td style="text-align:left"><b>买入摩擦</b></td><td>8</td>
+        <td style="text-align:left">场内：1 ÷ (1 + 期末溢价率)；场外无溢价 = 满分</td>
+        <td style="text-align:left">绝对刻度</td></tr>
+  </tbody></table></div>
+
+  <div class="note gray">
+    <b>为什么收益维度只用净值增长率、不用"超额收益"？</b>
+    因为这些产品<b>跟踪同一个指数、处在同一区间、同一币种</b>，净值增长率本身就完全可比；
+    而各家的"业绩比较基准"口径并不统一（半年基准收益从 __BENCH_MIN__% 到 __BENCH_MAX__%），
+    用 ①−③ 反而会把口径差异算成基金能力，不公平。
+  </div>
+
+  <h3>稳健性检验：换一套权重，排名会不会变？</h3>
+  <p>用三组替代权重重算，给出每只产品在不同权重下的排名区间。<b>区间越窄，说明结论越不依赖权重的主观设定。</b></p>
+  <div class="tablebox"><table id="t8">
+  <thead><tr><th>产品</th><th>基准权重排名</th><th>收益优先</th><th>成本优先</th><th>结构优先</th><th>排名区间</th><th style="text-align:left">结论</th></tr></thead>
+  <tbody>__ROWS_P8__</tbody></table></div>
+  <div class="legend">
+    <span>收益优先 = 收益 55 / 敞口 15 / 成本 15 / 规模 10 / 摩擦 5</span>
+    <span>成本优先 = 收益 25 / 敞口 15 / 成本 40 / 规模 12 / 摩擦 8</span>
+    <span>结构优先 = 收益 30 / 敞口 35 / 成本 20 / 规模 10 / 摩擦 5</span>
+  </div>
+
+  <h3>使用这几张表之前，请先看这四条</h3>
+  <div class="grid2">
+    <div class="mini">
+      <div class="t">① 只对"长期持有"有意义</div>
+      <div class="s">评分用的是 A 类份额（长期持有费率更优）。若持有期在 1–2 年内，
+      C 类（免申购费、按日计提销售服务费）通常更划算，排名需要重算。</div>
+    </div>
+    <div class="mini">
+      <div class="t">② 场内 ETF 与场外联接不是同一类工具</div>
+      <div class="s">场内需要证券账户、按实时价成交、可 T+0；场外用基金账户、按净值确认、有申赎费。
+      分数高不等于适合你——取决于你用什么账户、怎么交易。</div>
+    </div>
+    <div class="mini">
+      <div class="t">③ 半年数据噪声很大</div>
+      <div class="s">国泰联接 A 半年 6.90% 高于它自己持有的国泰 ETF（6.27%），这在数学上不该发生，
+      说明短期净值受估值口径影响，<b>不要用半年排名做决定</b>。所以三年占 50% 权重。</div>
+    </div>
+    <div class="mini">
+      <div class="t">④ 溢价是动态的</div>
+      <div class="s">买入摩擦维度用的是 2026-06-30 的期末溢价快照。场内 QDII ETF 的溢价随额度和行情波动，
+      实际下单前应看当日实时溢价率，溢价高时改走场外或等回落。</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p1">
   <p><b>参与率</b>衡量的是"基金净资产里有多少真的暴露在指数上"。名义参与率只算本层持仓；
   <b>穿透后参与率</b>再乘一层目标 ETF 自己的参与率——因为 ETF 自己也不是满仓。</p>
   <div class="tablebox"><table id="t1">
@@ -531,8 +620,91 @@ def main():
                       % (r["short"], r["code"], r["pdf"], "".join(inner)))
 
     fut_total = sum(r["futures_mv"] or 0 for r in rows) / 1e8
+
+    # ---- p7 推荐排名（量化打分） ----
+    score = json.load(open(os.path.join(ROOT, "data", "score.json"), encoding="utf-8"))
+    try:
+        subs = json.load(open(os.path.join(ROOT, "data", "subscribe_status.json"),
+                              encoding="utf-8"))
+    except Exception:                       # noqa: BLE001
+        subs = {}
+
+    def sub_label(code):
+        s = (subs.get(code) or {}).get("sgzt")
+        if not s:
+            return '<span class="dim">—</span>'
+        if s == "场内买入":
+            return '<span class="chip etf">场内买入</span>'
+        if s == "暂停申购":
+            return '<span class="chip ew" style="background:#fdf0ee;color:#c0392b">暂停申购</span>'
+        if "限制" in s:
+            return '<span class="chip fof">%s</span>' % s
+        return '<span class="chip ew">%s</span>' % s
+
+    SUBKEY = {"513500": "513500", "159612": "159612", "159655": "159655", "513650": "513650",
+              "050025": "050025", "161125": "161125", "007721": "007721",
+              "017028": "017028", "017641": "017641", "018064": "018064"}
+
+    DIMS = [("长期收益兑现", "return", 40), ("真实敞口", "exposure", 20),
+            ("持有成本", "cost", 20), ("规模与稳定", "scale", 12), ("买入摩擦", "friction", 8)]
+
+    def sbar(val, full):
+        p = max(0.0, min(100.0, val / full * 100.0))
+        return ('<div class="bar g"><i style="width:%.1f%%"></i></div>'
+                '<span class="dim" style="font-size:11.5px">%.1f</span>' % (p, val))
+
+    r7 = []
+    for r in score["ranking"]:
+        b = r["score_breakdown"]
+        rk = r["rank"]
+        badge = ('<b style="color:var(--green)">%d</b>' % rk if rk <= 4
+                 else ('<b>%d</b>' % rk if rk <= 7 else '<span class="dim">%d</span>' % rk))
+        dim_cells = "".join(
+            '<td data-v="%.2f">%s</td>' % (b[name], sbar(b[name], full))
+            for name, _key, full in DIMS)
+        r7.append(
+            "<tr>"
+            '<td data-v="%d">%s</td>'
+            '<td class="name">%s<span class="code">%s</span></td>'
+            "<td>%s</td>"
+            '<td data-v="%.2f"><b>%.2f</b></td>'
+            "%s"
+            '<td data-v="%.2f">%.2f%%</td><td data-v="%.2f">%.2f%%</td>'
+            '<td data-v="%.2f">%.2f%%</td>'
+            '<td data-v="%.3f">%.2f%%</td><td data-v="%.2f">%.2f%%</td>'
+            '<td data-v="%d">%d–%d%s</td>'
+            "<td>%s</td></tr>" % (
+                rk, badge, r["short"], r["code"], chip(r["kind"]), r["score"], r["score"],
+                dim_cells,
+                r["r3"] or 0, r["r3"] or 0, r["r1"] or 0, r["r1"] or 0,
+                r["r6"], r["r6"], r["fee"], r["fee"], r["penetrated"], r["penetrated"],
+                r["rank_max"], r["rank_min"], r["rank_max"],
+                "" if r["rank_stable"] else " ⚠",
+                sub_label(SUBKEY.get(r["code"], r["code"]))))
+
+    r8 = []
+    for r in score["ranking"]:
+        alt = r.get("alt_ranks", {})
+        stable = r["rank_stable"]
+        r8.append('<tr><td class="name">%s<span class="code">%s</span></td>'
+                  '<td data-v="%d"><b>%d</b></td>'
+                  '<td data-v="%d">%d</td><td data-v="%d">%d</td><td data-v="%d">%d</td>'
+                  '<td data-v="%d">%d–%d</td>'
+                  '<td style="text-align:left" class="%s">%s</td></tr>'
+                  % (r["short"], r["code"], r["rank"], r["rank"],
+                     alt.get("收益优先", 0), alt.get("收益优先", 0),
+                     alt.get("成本优先", 0), alt.get("成本优先", 0),
+                     alt.get("结构优先", 0), alt.get("结构优先", 0),
+                     r["rank_max"], r["rank_min"], r["rank_max"],
+                     "hi" if stable else "lo",
+                     "权重不敏感，结论稳" if stable else "对权重敏感，需谨慎"))
+
     html = (TPL
             .replace("__N__", str(len(rows)))
+            .replace("__TOP1__", score["ranking"][0]["short"])
+            .replace("__TOP1_SCORE__", "%.2f" % score["ranking"][0]["score"])
+            .replace("__GAP__", "%.0f" % (score["ranking"][3]["score"]
+                                          - score["ranking"][4]["score"]))
             .replace("__PEN_MIN__", "%.2f" % pen_min["penetrated_pct"])
             .replace("__PEN_MAX__", "%.2f" % pen_max["penetrated_pct"])
             .replace("__PEN_TOP__", pen_max["short"]).replace("__PEN_TOPV__", "%.2f" % pen_max["penetrated_pct"])
@@ -546,6 +718,8 @@ def main():
                                                    - min(r["bench_6m"] for r in rows)))
             .replace("__R_HIGH__", "%.2f" % meta["r_index_high"])
             .replace("__R_LOW__", "%.2f" % meta["r_index_low"])
+            .replace("__ROWS_P7__", "".join(r7))
+            .replace("__ROWS_P8__", "".join(r8))
             .replace("__ROWS_P1__", "".join(r1))
             .replace("__ROWS_P2__", "".join(r2))
             .replace("__ROWS_P3__", "".join(r3))
