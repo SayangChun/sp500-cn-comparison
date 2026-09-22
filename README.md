@@ -5,8 +5,12 @@
 > 方法论来自 B 站 [@林怀瑾LHJ《同样跟踪纳斯达克 100，为什么国泰场外在前列？》](https://www.bilibili.com/video/BV1rdet6MEXA)（BV1rdet6MEXA）。
 > 该视频用"参与率 + 穿透 + 加权费率"三件事拆解了纳指 100 场外基金的业绩差异，本项目把同一套方法映射到标普 500。
 
-打开 [`index.html`](index.html) 看完整交互报告（单文件、无外部依赖、可离线打开）。
-想在 GitHub 上直接看渲染后的页面：仓库 **Settings → Pages → Source: Deploy from a branch → main / (root)**，之后访问 `https://sayangchun.github.io/sp500-cn-comparison/`。下面也有 Markdown 版主表，GitHub 上可直接读。
+> ### 🔗 在线浏览：[**4184f4d3d49841bbbea5ce00b8ba3263.sg2.agentos-app.run**](https://4184f4d3d49841bbbea5ce00b8ba3263.sg2.agentos-app.run)
+
+- **在线版**（推荐）：上面的分享链接，打开即用，无需下载。
+- **本地版**：[`index.html`](index.html) 单文件、无外部依赖、可离线打开。
+- **GitHub Pages**（可选）：仓库 **Settings → Pages → Source: Deploy from a branch → main / (root)**，之后访问 `https://sayangchun.github.io/sp500-cn-comparison/`。
+- **不想点开也行**：下面就是 Markdown 版主表，GitHub 上可直接读。
 
 ---
 
@@ -121,6 +125,10 @@ python scripts/fetch_quotes.py      # -> data/quotes_cache.json, data/nav_per_sh
 python scripts/analyze.py           # -> data/analysis.json
 python scripts/build_site.py        # -> index.html
 ```
+
+> `scripts/push_via_api.py` 是一个备用推送工具：当 `git push` 被网络代理阻断时，
+> 用 GitHub REST API（Git Data API）把本地快照提交到远端，用法
+> `python scripts/push_via_api.py "提交信息"`。正常网络环境下不需要它。
 
 数据源全部为公开接口，无需登录：
 
