@@ -59,10 +59,6 @@ PRODUCTS = [
          where="场外", index="标普500"),
     dict(code="017641", name="摩根标普500指数(QDII)A", short="摩根A", kind="场外QDII直投",
          where="场外", index="标普500"),
-    dict(code="096001", name="大成标普500等权重指数A", short="大成等权A", kind="场外等权重",
-         where="场外", index="标普500等权重"),
-    dict(code="519981", name="长信标普100等权重指数", short="长信等权", kind="场外等权重",
-         where="场外", index="标普100等权重"),
 ]
 
 # 场内 ETF 的行情代码（1.=沪市，0.=深市）

@@ -126,9 +126,10 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <span class="tag">__N__ 只产品</span>
     <span class="tag g">4 只场内 ETF</span>
     <span class="tag g">6 只场外</span>
-    <span class="tag a">2 只等权重（单列）</span>
     <span class="tag v">数据源：2026 中报 PDF</span>
   </div>
+  <p class="sub" style="margin-top:12px">收录口径：仅<b>市值加权的纯标普 500 指数</b>产品。
+  标普 500 等权重、标普 100 等权重、标普行业/主题指数（红利低波、油气、消费、生物科技等）均不收录。</p>
 </div>
 
 <h2><span class="num">01</span>关键发现</h2>
@@ -141,9 +142,9 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   </div>
   <div class="card">
     <div class="k">半年基准收益率最大口径差</div>
-    <div class="v">0.44 pp</div>
-    <div class="d">同样是标普 500，博时 ETF 写 <b>6.60%</b>（NTR），国泰/南方 ETF 写 <b>6.16%</b>。
-    口径不统一，跨基金的"超额收益"不能直接横比。</div>
+    <div class="v">__BENCH_SPREAD__ pp</div>
+    <div class="d">同样是标普 500，博时 ETF 写 <b>6.60%</b>（NTR），国泰/南方 ETF 写 <b>6.16%</b>，
+    纯指数口径本身就差 0.44pp；含 95/5 现金的场外产品最低只有 5.86%。跨基金的"超额收益"不能直接横比。</div>
   </div>
   <div class="card">
     <div class="k">费率误区实例</div>
@@ -200,7 +201,6 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     <span><i class="dot" style="background:var(--green)"></i>场外 ETF 联接</span>
     <span><i class="dot" style="background:#d99a2b"></i>场外 QDII-FOF / LOF</span>
     <span><i class="dot" style="background:var(--violet)"></i>场外直投</span>
-    <span><i class="dot" style="background:#9aa3ad"></i>等权重（口径不同，单列）</span>
   </div>
   <div class="note blue">
     <b>怎么读这张表：</b>「穿透后参与率」低于 100% 的部分，就是没有拿到指数收益的钱。
@@ -215,7 +215,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   缺口理论上应该接近该产品的年化综合费率的一半。</p>
   <div class="note">
     <b>重要口径警示：</b>各基金业绩比较基准的口径并不统一（含息/价格、估值汇率/人民币汇率、95% 或 100% 指数），
-    半年基准收益从 __BENCH_MIN__% 到 __BENCH_MAX__% 不等，跨度 0.44 个百分点。
+    半年基准收益从 __BENCH_MIN__% 到 __BENCH_MAX__% 不等，跨度 __BENCH_SPREAD__ 个百分点。
     因此下表的「理论收益」「缺口」用了两个统一口径分别计算（__R_HIGH__% 与 __R_LOW__%），
     请当作区间看，不要当点估计。
   </div>
@@ -244,7 +244,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
       <li><b>含息与否：</b>博时 ETF 明确写 <code>NTR（Net Total Return，净总收益）</code>，
       其余多数只写"标普 500 指数收益率"。含息与价格指数半年能差 0.3–0.5 个百分点。</li>
       <li><b>汇率口径：</b>"经估值汇率调整"与"经人民币汇率调整"并存，估值时点不同会产生差异。</li>
-      <li><b>指数权重：</b>ETF 与等权重产品用 100% 指数，场外联接/QDII-FOF 普遍用 95% 指数 + 5% 活期。</li>
+      <li><b>指数权重：</b>场内 ETF 用 100% 指数，场外联接 / QDII-FOF 普遍用 95% 指数 + 5% 活期存款。</li>
     </ol>
   </div>
 </div>
@@ -381,7 +381,7 @@ def yi(x):
 def chip(kind):
     m = {"场内ETF": ("etf", "场内ETF"), "场外ETF联接": ("link", "联接"),
          "场外QDII-FOF": ("fof", "QDII-FOF"), "场外QDII-LOF": ("fof", "QDII-LOF"),
-         "场外QDII直投": ("direct", "QDII直投"), "场外等权重": ("ew", "等权重")}
+         "场外QDII直投": ("direct", "QDII直投")}
     c, t = m.get(kind, ("ew", kind))
     return '<span class="chip %s">%s</span>' % (c, t)
 
@@ -399,7 +399,6 @@ def main():
     main_rows = [r for r in rows if r["index"] == "标普500"]
     etf = [r for r in main_rows if r["kind"] == "场内ETF"]
     off = [r for r in main_rows if r["where"] == "场外"]
-    ew = [r for r in rows if r["index"] != "标普500"]
 
     # ---- 01 卡片 ----
     off_sorted = sorted(off, key=lambda r: -r["penetrated_pct"])
@@ -408,8 +407,7 @@ def main():
 
     # ---- p1 参与率与费率 ----
     order = (sorted(etf, key=lambda r: -r["penetrated_pct"])
-             + sorted(off, key=lambda r: -r["penetrated_pct"])
-             + sorted(ew, key=lambda r: -r["penetrated_pct"]))
+             + sorted(off, key=lambda r: -r["penetrated_pct"]))
     r1 = []
     for r in order:
         d1 = r["direct_pct"]
@@ -433,8 +431,7 @@ def main():
 
     # ---- p2 收益与缺口 ----
     order2 = (sorted(etf, key=lambda r: -r["nav_6m"])
-              + sorted(off, key=lambda r: -r["nav_6m"])
-              + sorted(ew, key=lambda r: -r["nav_6m"]))
+              + sorted(off, key=lambda r: -r["nav_6m"]))
     r2 = []
     for r in order2:
         em = r["end_minus_avg_pp"]
@@ -545,6 +542,8 @@ def main():
             .replace("__FUT_TOTAL__", "%.2f" % fut_total)
             .replace("__BENCH_MIN__", "%.2f" % min(r["bench_6m"] for r in rows))
             .replace("__BENCH_MAX__", "%.2f" % max(r["bench_6m"] for r in rows))
+            .replace("__BENCH_SPREAD__", "%.2f" % (max(r["bench_6m"] for r in rows)
+                                                   - min(r["bench_6m"] for r in rows)))
             .replace("__R_HIGH__", "%.2f" % meta["r_index_high"])
             .replace("__R_LOW__", "%.2f" % meta["r_index_low"])
             .replace("__ROWS_P1__", "".join(r1))

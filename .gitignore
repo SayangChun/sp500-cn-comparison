@@ -2,6 +2,9 @@
 data/pdf/
 data/txt/
 
+# 工作区内部数据（记忆/缓存），不随仓库分发
+.workbuddy-ai/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -13,3 +16,6 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 发布用临时目录（由 index.html 复制而来）
+dist/
