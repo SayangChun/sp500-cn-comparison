@@ -12,6 +12,74 @@
 - **GitHub Pages**（可选）：仓库 **Settings → Pages → Source: Deploy from a branch → main / (root)**，之后访问 `https://sayangchun.github.io/sp500-cn-comparison/`。
 - **不想点开也行**：下面就是 Markdown 版主表，GitHub 上可直接读。
 
+## 一张图看懂
+
+![标普500标的量化打分排名](assets/rank_score.svg)
+
+**怎么读这张图**：每行是一只产品，条形按五个维度堆叠，右侧数字是加权总分。排名徽标里绿色是前四名（全是场内 ETF），红色是后三名。
+
+三个一眼可见的事实：
+
+1. **前四名与场外之间有约 26 分的断层**（84.0 → 58.0），断层主要来自「真实敞口」和「持有成本」两项。
+2. **场内 ETF 的敞口几乎是满分**（19.2–20.0/20），场外普遍只有 0–3.9 分——因为它们有 5% 上下的净值停在现金和应收款里，牛市里这就是少赚的钱。
+3. **摩根 A 和易方达 LOF 各有一项满分、也各有一项垫底**：摩根费率最低（20/20）但敞口最差（0/20）；易方达规模最稳（11.6/12）但费率最高（0/20）。
+
+## 四张图看清差异
+
+### 1. 低费率 ≠ 好结果
+
+![费率排名与三年收益排名对照](assets/rank_bump.svg)
+
+左边按综合费率从低到高排，右边按三年收益从高到低排。**Spearman 秩相关只有 0.30**——费率和收益几乎是两件独立的事。博时 ETF 费率只排第 6，三年收益排第 1；摩根 A 费率最低，收益只排第 7。
+
+### 2. 参与率：钱有多少真的进了指数
+
+![穿透后参与率](assets/exposure.svg)
+
+深色是期末穿透后参与率，浅色是再按场内溢价打折后的「有效参与率」。场内 ETF 都在 99.8%–100%，场外只有 94.0%–95.2%。差出来的那 5% 是现金与应收款——涨的时候就是少赚的钱。
+
+### 3. 多期收益：差距随持有期拉长而放大
+
+![多期净值增长率](assets/returns.svg)
+
+同一指数、同一区间、同一币种，净值增长率可以直接横比。**半年最多差 1.35 个百分点，三年差到 10.9 个百分点**——差距会随持有期复利放大，这也是为什么打分里三年占 50% 权重。
+
+### 4. 场内溢价：买场内要多付这笔钱
+
+![场内 ETF 期末溢价](assets/premium.svg)
+
+四只 ETF 在 2026-06-30 全部处于溢价状态（1.53%–3.52%）。按场内价买入，真正买到指数敞口的钱只有 96.4%–98.4%。溢价是动态的，下单前要看当日实时溢价率。
+
+## 选基决策流程
+
+```mermaid
+flowchart TD
+    A["想配置标普 500"] --> B{"有证券账户吗？"}
+    B -- 有 --> C["场内 ETF<br/>华夏 159655 / 博时 513500<br/>南方 513650 / 国泰 159612"]
+    B -- 没有 --> D{"场外能申购吗？"}
+    D -- 能 --> E["摩根标普 500 指数 A<br/>017641（限制大额申购）"]
+    D -- 不能 --> F["先开证券账户<br/>或等额度恢复"]
+    C --> G{"当日溢价率"}
+    G -- "≤ 2%" --> H["场内买入"]
+    G -- "> 2%" --> I["暂缓，或改走场外"]
+```
+
+> 场外 6 只产品里有 5 只目前是「暂停申购」，只有摩根 A 可以买（限制大额）。这一步不进评分，但会直接决定你实际能买到什么。
+
+## 总分排名（原生图表版）
+
+```mermaid
+xychart-beta
+    title "量化总分（满分 100）"
+    x-axis ["华夏ETF","博时ETF","南方ETF","国泰ETF","摩根A","博时联接A","华夏联接A","易方达LOF","天弘FOF","国泰联接A"]
+    y-axis "总分" 0 --> 100
+    bar [91.04, 90.08, 87.45, 83.98, 57.95, 54.14, 50.24, 45.31, 32.24, 32.17]
+```
+
+> 上面的 SVG 图信息更全（含五维拆解）；这一张是 GitHub 原生 Mermaid 渲染，在部分客户端里比 SVG 更稳。
+
+---
+
 ## 推荐排名（多维度量化打分）
 
 五个维度加权，满分 100。**限购额度未计入评分**；申购状态仅作标注。
@@ -150,6 +218,7 @@
 
 ```
 index.html                 交互报告（由 scripts/build_site.py 生成）
+assets/                    README 内嵌图表（由 scripts/build_charts.py 生成的 SVG）
 data/
   reports_index.json       定期报告清单（标题 / 公告 ID / 日期）
   raw_reports.json         中报解析结果（资产组合、期货、费率条款、净值增长率…）
@@ -164,7 +233,8 @@ scripts/
   fetch_quotes.py          3. 抓行情与份额净值
   analyze.py               4. 穿透计算
   score.py                 5. 多维度量化打分排名
-  build_site.py            6. 生成 index.html
+  build_charts.py          6. 生成 assets/*.svg（README 内嵌图表）
+  build_site.py            7. 生成 index.html
   push_via_api.py          备用推送（git push 被代理阻断时走 GitHub API）
 ```
 
@@ -181,9 +251,13 @@ python scripts/parse_reports.py     # -> data/raw_reports.json
 python scripts/fetch_quotes.py      # -> data/quotes_cache.json, data/nav_per_share.json
 python scripts/analyze.py           # -> data/analysis.json
 python scripts/score.py             # -> data/score.json（多维度量化打分排名）
+python scripts/build_charts.py      # -> assets/*.svg（README 内嵌图表）
 python scripts/build_site.py        # -> index.html
 ```
 
+> 图表用纯 SVG 手写生成（不依赖 matplotlib / 中文字体），因此体积只有几十 KB、
+> 在任何缩放下都清晰，也能被 GitHub 直接内嵌渲染。README 里的 Mermaid 图由 GitHub 原生渲染。
+>
 > `scripts/push_via_api.py` 是一个备用推送工具：当 `git push` 被网络代理阻断时，
 > 用 GitHub REST API（Git Data API）把本地快照提交到远端，用法
 > `python scripts/push_via_api.py "提交信息"`。正常网络环境下不需要它。
