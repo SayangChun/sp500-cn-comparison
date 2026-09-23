@@ -55,16 +55,48 @@ def api(method, path, tok, payload=None):
             os.remove(tmp)
 
 
+def gitignored():
+    """读 .gitignore，返回 (目录名集合, 文件名集合, 后缀集合)。
+
+    只支持本项目用到的几种写法：`dir/`、`*.ext`、`path/to/file`、`name`。
+    目的是让 API 推送和 `git add` 保持同一套忽略规则，否则会把
+    data/pdf、dist、docs/img 这些本地文件也推上去。
+    """
+    dirs, files, exts = set(), set(), set()
+    gi = os.path.join(ROOT, ".gitignore")
+    if not os.path.exists(gi):
+        return dirs, files, exts
+    for line in open(gi, encoding="utf-8"):
+        s = line.strip()
+        if not s or s.startswith("#"):
+            continue
+        if s.endswith("/"):
+            dirs.add(s[:-1])
+        elif s.startswith("*."):
+            exts.add(s[1:])
+        else:
+            files.add(s.replace("\\", "/"))
+    return dirs, files, exts
+
+
 def walk():
+    ign_dirs, ign_files, ign_exts = gitignored()
+    ign_dirs |= SKIP_DIRS
     files = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        dirnames[:] = [d for d in dirnames
+                       if d not in ign_dirs and d not in SKIP_DIRS]
         for fn in filenames:
             if fn in SKIP_FILES:
                 continue
-            full = os.path.join(dirpath, fn)
-            rel = os.path.relpath(full, ROOT).replace("\\", "/")
-            files.append((rel, full))
+            rel = os.path.relpath(os.path.join(dirpath, fn), ROOT).replace("\\", "/")
+            if rel in ign_files:
+                continue
+            if os.path.splitext(fn)[1] in ign_exts:
+                continue
+            if any(rel == d or rel.startswith(d + "/") for d in ign_dirs):
+                continue
+            files.append((rel, os.path.join(dirpath, fn)))
     return sorted(files)
 
 
