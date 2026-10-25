@@ -42,7 +42,10 @@ SCALE_BANDS = [(2e9, 7.0), (5e8, 5.5), (1e8, 4.0), (0, 2.0)]
 def load():
     a = json.load(open(os.path.join(ROOT, "data", "analysis.json"), encoding="utf-8"))
     r = json.load(open(os.path.join(ROOT, "data", "raw_reports.json"), encoding="utf-8"))
-    return a, r
+    latest_path = os.path.join(ROOT, "data", "latest.json")
+    latest = (json.load(open(latest_path, encoding="utf-8"))
+              if os.path.exists(latest_path) else {"products": {}, "asof": None})
+    return a, r, latest
 
 
 def periods_of(raw, code):
@@ -84,13 +87,20 @@ def scale_score(nav):
 
 
 def build():
-    a, raw = load()
+    a, raw, latest = load()
     P = a["products"]
     rows = []
+    LP = latest.get("products") or {}
     for code, rec in P.items():
-        p = periods_of(raw, code)
+        # 优先用滚动到最新交易日的窗口；没有则回退到中报窗口
+        live = (LP.get(code) or {}).get("periods") or {}
+        p = live if "过去六个月" in live else periods_of(raw, code)
         if not p or "过去六个月" not in p:
             continue
+        # 溢价同理：优先最新快照
+        lp = LP.get(code) or {}
+        prem = lp.get("premium", rec.get("premium_end"))
+        prem_adj = lp.get("premium_adj_pct", rec.get("premium_adj_pct"))
         r6 = p["过去六个月"]["nav"]
         r1 = p.get("过去一年", {}).get("nav")
         r3 = p.get("过去三年", {}).get("nav")
@@ -100,11 +110,12 @@ def build():
             bench6=rec["bench_6m"], diff6=rec["diff_6m"],
             penetrated=rec["penetrated_pct"], fee=rec["comprehensive_fee"],
             nav=rec["nav_end"], scale_chg=rec["scale_chg_pct"] or 0.0,
-            premium=rec.get("premium_end"),
-            premium_adj=rec.get("premium_adj_pct"),
+            premium=prem,
+            premium_adj=prem_adj,
+            asof=latest.get("asof"),
             implied=rec["implied_high"], vs_target=rec.get("vs_target_pp"),
             target=rec.get("target_code"), periods=p,
-            std6=p["过去六个月"]["std"],
+            std6=p["过去六个月"].get("std"),
             std1=(p.get("过去一年") or {}).get("std"),
         ))
 
@@ -175,6 +186,9 @@ def build():
             normalization="收益/敞口/成本用组内 min-max；规模用分档绝对分；买入摩擦用绝对刻度",
             scale_bands=[{"nav_min": b[0], "score": b[1]} for b in SCALE_BANDS],
             note="限购额度未计入评分；申购状态仅作标注。等权重与主题指数已剔除。",
+            asof=latest.get("asof"),
+            data_note=("参与率 / 费率 / 规模取 2026 中报（Q3 季报尚未披露）；"
+                       "多期收益与场内溢价滚动至 %s" % (latest.get("asof") or "—")),
         ),
         ranking=rows,
     )

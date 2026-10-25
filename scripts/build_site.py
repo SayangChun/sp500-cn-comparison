@@ -179,7 +179,8 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 </tbody></table></div>
 
 <div class="tabs">
-  <button class="tab on" data-t="p7">推荐排名（量化打分）</button>
+  <button class="tab on" data-t="p8">本次更新（截至 10-22）</button>
+  <button class="tab" data-t="p7">推荐排名（量化打分）</button>
   <button class="tab" data-t="p1">参与率与费率</button>
   <button class="tab" data-t="p2">收益与跟踪缺口</button>
   <button class="tab" data-t="p3">基准口径对照</button>
@@ -188,7 +189,65 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
   <button class="tab" data-t="p6">原始数据与出处</button>
 </div>
 
-<div class="panel on" id="p7">
+<div class="panel on" id="p8">
+  <p>数据基准日 <b>2026-10-22</b>（最近一个交易日）。三季报要到 10-31 前才披露，所以
+  <b>参与率 / 加权综合费率 / 规模仍是 2026 中报口径</b>；多期收益、场内溢价、申购状态已滚动到最新。</p>
+
+  <div class="note blue">
+    <b>一句话结论：</b>前四名仍然是四只场内 ETF，但<b>内部座次换了</b>——
+    博时反超登顶，华夏从第 1 掉到第 4；场外里国泰联接从第 10 跳到第 6，
+    但这个名次<b>只在"近一年"窗口下成立</b>，换成三年窗口会掉到第 8。
+  </div>
+
+  <h3>1. 排名变化</h3>
+  <div class="tablebox"><table id="t9">
+  <thead><tr><th>产品</th><th>上次</th><th>本次</th><th>名次变化</th>
+  <th>上次得分</th><th>本次得分</th><th>Δ分</th><th style="text-align:left">主要驱动</th></tr></thead>
+  <tbody>__ROWS_P8A__</tbody></table></div>
+
+  <h3>2. 收益窗口滚动后的变化</h3>
+  <p>中报的「过去六个月/一年/三年」终点钉死在 2026-06-30；滚动窗口的终点是 2026-10-22。
+  同一只基金、同一套算法，只是把窗口往后挪了 4 个月。</p>
+  <div class="tablebox"><table id="t10">
+  <thead><tr><th>产品</th><th>三年（中报）</th><th>三年（滚动）</th><th>Δ</th>
+  <th>一年（中报）</th><th>一年（滚动）</th><th>Δ</th>
+  <th>半年（中报）</th><th>半年（滚动）</th><th>Δ</th></tr></thead>
+  <tbody>__ROWS_P8B__</tbody></table></div>
+
+  <h3>3. 窗口稳健性：名次对收益窗口有多敏感</h3>
+  <p>把收益维度分别换成"只看三年 / 只看一年 / 只看半年"，其余维度不变，重算总排名。
+  <b>跨度越小，说明这个名次越不依赖窗口选择。</b></p>
+  <div class="tablebox"><table id="t11">
+  <thead><tr><th>产品</th><th>基准<br><span class="dim" style="font-weight:400">3y50+1y30+6m20</span></th>
+  <th>只看三年</th><th>只看一年</th><th>只看半年</th><th>名次跨度</th>
+  <th style="text-align:left">结论</th></tr></thead>
+  <tbody>__ROWS_P8C__</tbody></table></div>
+  <div class="note">
+    <b>看这一列：</b>南方 ETF 在四种窗口下都在 1–2 名，是最稳的；
+    <b>国泰联接在 1–8 名之间跳</b>——它的近一年 10.08% 全场最高，但近三年 60.10% 只排第 6，
+    说明那个"第一"是最近一年才发生的，不可外推。
+  </div>
+
+  <h3>4. 场内溢价一年内扩大 2.2–5.3 个百分点</h3>
+  <p>这是本次更新最实质的变化：四只 QDII ETF 的溢价全部走高，按场内价买入能买到的指数敞口从 96%+ 降到 <b>92.3%–93.5%</b>。</p>
+  <div class="tablebox"><table id="t12">
+  <thead><tr><th>ETF</th><th>2025-10-22 溢价</th><th>2026-10-22 溢价</th><th>变化</th>
+  <th>溢价调整后参与率</th><th>申购状态</th></tr></thead>
+  <tbody>__ROWS_P8D__</tbody></table></div>
+
+  <h3>5. 申购状态变化</h3>
+  <div class="tablebox"><table id="t13">
+  <thead><tr><th>产品</th><th>上次（9-22）</th><th>本次（10-22）</th><th style="text-align:left">说明</th></tr></thead>
+  <tbody>__ROWS_P8E__</tbody></table></div>
+
+  <div class="note gray">
+    <b>方法说明：</b>收益用<b>累计净值</b>计算（正确处理分红），溢价用<b>单位净值</b>计算。
+    净值序列来自天天基金 pingzhongdata（一次请求取全历史），场内价来自腾讯行情；
+    10 只产品的 2026-06-30 净值已与中报「期末份额净值」逐只核对一致。
+  </div>
+</div>
+
+<div class="panel" id="p7">
   <p>五个维度加权打分，满分 100。<b>限购额度未计入评分</b>——按需求只看基金本身的质量；
   申购状态只在最后一列做标注，供实操参考。</p>
 
@@ -699,6 +758,118 @@ def main():
                      "hi" if stable else "lo",
                      "权重不敏感，结论稳" if stable else "对权重敏感，需谨慎"))
 
+    # ---- p8 本次更新 ----
+    prev_path = os.path.join(ROOT, "data", "score_prev.json")
+    prev = (json.load(open(prev_path, encoding="utf-8"))["ranking"]
+            if os.path.exists(prev_path) else [])
+    OLD = {r["code"]: r for r in prev}
+    try:
+        wr = json.load(open(os.path.join(ROOT, "data", "window_robust.json"),
+                            encoding="utf-8"))
+    except Exception:                       # noqa: BLE001
+        wr = {"variants": [], "ranks": {}}
+    try:
+        latest = json.load(open(os.path.join(ROOT, "data", "latest.json"),
+                                encoding="utf-8"))
+    except Exception:                       # noqa: BLE001
+        latest = {"products": {}, "subscribe": {}}
+    LP = latest.get("products") or {}
+
+    r8a = []
+    for r in score["ranking"]:
+        o = OLD.get(r["code"])
+        if not o:
+            continue
+        d = r["score"] - o["score"]
+        dims = {k: r["score_breakdown"][k] - o["score_breakdown"][k]
+                for k in r["score_breakdown"]}
+        top = max(dims.items(), key=lambda x: abs(x[1]))
+        move = o["rank"] - r["rank"]
+        mcls = "hi" if move > 0 else ("lo" if move < 0 else "dim")
+        mtxt = ("↑%d" % move) if move > 0 else (("↓%d" % -move) if move < 0 else "—")
+        r8a.append(
+            '<tr><td class="name">%s<span class="code">%s</span></td>'
+            '<td data-v="%d">%d</td><td data-v="%d"><b>%d</b></td>'
+            '<td data-v="%d" class="%s"><b>%s</b></td>'
+            '<td data-v="%.2f">%.2f</td><td data-v="%.2f"><b>%.2f</b></td>'
+            '<td data-v="%.2f" class="%s">%+.2f</td>'
+            '<td style="text-align:left">%s %+.1f 分</td></tr>'
+            % (r["short"], r["code"], o["rank"], o["rank"], r["rank"], r["rank"],
+               move, mcls, mtxt, o["score"], o["score"], r["score"], r["score"],
+               d, "hi" if d > 0 else ("lo" if d < 0 else "dim"), d,
+               top[0], top[1]))
+
+    r8b = []
+    for r in score["ranking"]:
+        o = OLD.get(r["code"])
+        if not o:
+            continue
+        cells = []
+        for key in ("r3", "r1", "r6"):
+            a, b2 = o.get(key) or 0, r.get(key) or 0
+            d = b2 - a
+            cells.append('<td data-v="%.2f">%.2f%%</td><td data-v="%.2f">%.2f%%</td>'
+                         '<td data-v="%.2f" class="%s">%+.2f</td>'
+                         % (a, a, b2, b2, d,
+                            "hi" if d > 0 else ("lo" if d < 0 else "dim"), d))
+        r8b.append('<tr><td class="name">%s<span class="code">%s</span></td>%s</tr>'
+                   % (r["short"], r["code"], "".join(cells)))
+
+    r8c = []
+    vnames = wr.get("variants") or []
+    short_of = {r["code"]: r["short"] for r in score["ranking"]}
+    rows_c = [((wr.get("ranks") or {}).get(c) or {}, c) for c in short_of]
+    for d, c in sorted(rows_c, key=lambda x: x[0].get(vnames[0], 99) if vnames else 99):
+        if not d:
+            continue
+        ranks = [d.get(n, 0) for n in vnames]
+        span = (max(ranks) - min(ranks)) if ranks else 0
+        good = span <= 1
+        r8c.append(
+            '<tr><td class="name">%s<span class="code">%s</span></td>%s'
+            '<td data-v="%d" class="%s"><b>%d</b></td>'
+            '<td style="text-align:left" class="%s">%s</td></tr>'
+            % (short_of[c], c,
+               "".join('<td data-v="%d">%d</td>' % (x, x) for x in ranks),
+               span, "hi" if good else ("lo" if span >= 4 else "dim"), span,
+               "hi" if good else ("lo" if span >= 4 else "dim"),
+               "窗口不敏感，可信" if good else
+               ("对窗口敏感，需谨慎" if span >= 4 else "略有浮动")))
+
+    r8d = []
+    for r in score["ranking"]:
+        e = LP.get(r["code"]) or {}
+        if "premium" not in e:
+            continue
+        ch = e.get("premium_change") or 0
+        r8d.append(
+            '<tr><td class="name">%s<span class="code">%s</span></td>'
+            '<td data-v="%.2f">%+.2f%%</td><td data-v="%.2f"><b>%+.2f%%</b></td>'
+            '<td data-v="%.2f" class="%s"><b>%+.2f pp</b></td>'
+            '<td data-v="%.2f"><b>%.2f%%</b></td><td>%s</td></tr>'
+            % (r["short"], r["code"], e.get("premium_1y") or 0, e.get("premium_1y") or 0,
+               e["premium"], e["premium"], ch, "lo" if ch > 0 else "dim", ch,
+               e.get("premium_adj_pct") or 0, e.get("premium_adj_pct") or 0,
+               sub_label(r["code"])))
+
+    SUB_OLD = {"513500": "场内买入", "159612": "场内买入", "159655": "场内买入",
+               "513650": "场内买入", "050025": "暂停申购", "161125": "暂停申购",
+               "007721": "暂停申购", "017028": "暂停申购", "017641": "限制大额申购",
+               "018064": "暂停申购"}
+    r8e = []
+    for r in score["ranking"]:
+        new_s = (LP.get(r["code"]) or {}).get("sgzt") or "—"
+        old_s = SUB_OLD.get(r["code"], "—")
+        changed = new_s != old_s
+        note = ("一级市场申购已暂停，新份额停止创设 —— 这正是它溢价走高的原因"
+                if changed and "暂停" in new_s else
+                ("状态未变" if not changed else "状态变化"))
+        r8e.append('<tr><td class="name">%s<span class="code">%s</span></td>'
+                   '<td>%s</td><td class="%s"><b>%s</b></td>'
+                   '<td style="text-align:left" class="dim">%s</td></tr>'
+                   % (r["short"], r["code"], old_s,
+                      "lo" if changed else "dim", new_s, note))
+
     html = (TPL
             .replace("__N__", str(len(rows)))
             .replace("__TOP1__", score["ranking"][0]["short"])
@@ -718,6 +889,11 @@ def main():
                                                    - min(r["bench_6m"] for r in rows)))
             .replace("__R_HIGH__", "%.2f" % meta["r_index_high"])
             .replace("__R_LOW__", "%.2f" % meta["r_index_low"])
+            .replace("__ROWS_P8A__", "".join(r8a))
+            .replace("__ROWS_P8B__", "".join(r8b))
+            .replace("__ROWS_P8C__", "".join(r8c))
+            .replace("__ROWS_P8D__", "".join(r8d))
+            .replace("__ROWS_P8E__", "".join(r8e))
             .replace("__ROWS_P7__", "".join(r7))
             .replace("__ROWS_P8__", "".join(r8))
             .replace("__ROWS_P1__", "".join(r1))
