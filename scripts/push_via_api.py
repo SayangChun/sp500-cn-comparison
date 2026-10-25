@@ -84,8 +84,15 @@ def walk():
     ign_dirs |= SKIP_DIRS
     files = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = [d for d in dirnames
-                       if d not in ign_dirs and d not in SKIP_DIRS]
+        rel_dir = os.path.relpath(dirpath, ROOT).replace("\\", "/")
+        keep = []
+        for d in dirnames:
+            rd = d if rel_dir == "." else rel_dir + "/" + d
+            # 目录名本身（node_modules 等）和相对路径（data/pdf）都要比
+            if d in SKIP_DIRS or rd in ign_dirs:
+                continue
+            keep.append(d)
+        dirnames[:] = keep
         for fn in filenames:
             if fn in SKIP_FILES:
                 continue
@@ -102,10 +109,16 @@ def walk():
 
 def main():
     tok = token()
-    msg = sys.argv[1] if len(sys.argv) > 1 else "sync from local"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    force = "--force" in sys.argv
+    parent = None
+    for a in sys.argv[1:]:
+        if a.startswith("--parent="):
+            parent = a.split("=", 1)[1]
+    msg = args[0] if args else "sync from local"
 
     ref = api("GET", "/repos/%s/git/ref/heads/main" % REPO, tok)
-    base_commit = ref["object"]["sha"]
+    base_commit = parent or ref["object"]["sha"]
     commit = api("GET", "/repos/%s/git/commits/%s" % (REPO, base_commit), tok)
     base_tree = commit["tree"]["sha"]
     print("base commit:", base_commit[:7])
@@ -120,6 +133,14 @@ def main():
         tree.append({"path": rel, "mode": "100644", "type": "blob", "sha": blob["sha"]})
         print("  blob %-32s %6d B" % (rel, len(data)))
 
+    # 远端有、本地没有的文件 → 显式删除（sha: null）
+    remote_tree = api("GET", "/repos/%s/git/trees/%s?recursive=1" % (REPO, base_tree), tok)
+    local_paths = {t["path"] for t in tree}
+    for node in remote_tree.get("tree", []):
+        if node.get("type") == "blob" and node["path"] not in local_paths:
+            tree.append({"path": node["path"], "mode": "100644", "type": "blob", "sha": None})
+            print("  del  %-34s" % node["path"])
+
     new_tree = api("POST", "/repos/%s/git/trees" % REPO, tok,
                    {"base_tree": base_tree, "tree": tree})
     new_commit = api("POST", "/repos/%s/git/commits" % REPO, tok,
@@ -127,7 +148,7 @@ def main():
     if "sha" not in new_commit:
         raise SystemExit("建 commit 失败: %s" % new_commit)
     upd = api("PATCH", "/repos/%s/git/refs/heads/main" % REPO, tok,
-              {"sha": new_commit["sha"], "force": False})
+              {"sha": new_commit["sha"], "force": bool(force)})
     print("new commit:", new_commit["sha"][:7], "| ref updated:",
           "sha" in (upd.get("object") or {}))
 
