@@ -280,11 +280,17 @@ i = s.index("## 主表：")
 j = s.index("## 覆盖标的")
 s = s[:i] + MT + "\n" + PT + "\n---\n\n" + s[j:]
 
-# 结论速览：删掉旧表（已由更新记录 + 推荐排名覆盖）
-i = s.index("## 结论速览")
-j = s.index("## 主表：") if "## 主表：" in s[i:] else -1
-if j > i:
-    s = s[:i] + s[j:]
+# 结论速览：删掉旧表（已由更新记录 + 推荐排名覆盖），已删过就跳过
+if "## 结论速览" in s:
+    i = s.index("## 结论速览")
+    j = s.find("## 主表：", i)
+    if j > i:
+        s = s[:i] + s[j:]
+
+# 图表文件名带基准日（绕开 GitHub 图片缓存），这里统一补上后缀
+for base in ("rank_score", "rank_bump", "exposure", "returns", "premium"):
+    if os.path.exists(os.path.join(ROOT, "assets", "%s-%s.svg" % (base, ASOF))):
+        s = s.replace("assets/%s.svg" % base, "assets/%s-%s.svg" % (base, ASOF))
 
 open(p, "w", encoding="utf-8").write(s)
 print("README rebuilt: %d chars" % len(s))

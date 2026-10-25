@@ -41,6 +41,25 @@ DIMS = [("长期收益兑现", 40, C1), ("真实敞口", 20, C2), ("持有成本
         ("规模与稳定", 12, C4), ("买入摩擦", 8, C5)]
 
 
+def save(name, content):
+    """落盘为 <base>-<ASOF>.svg，并删掉同名的旧版本。
+
+    文件名带日期是为了绕开 GitHub 的图片缓存（camo 按 URL 缓存，路径不变就会
+    一直返回旧图）。每次更新基准日，URL 自动变化，README 里也就不会看到旧图。
+    """
+    base = name[:-4]
+    path = os.path.join(ASSETS, "%s-%s.svg" % (base, ASOF))
+    open(path, "w", encoding="utf-8").write(content)
+    keep = os.path.basename(path)
+    for f in os.listdir(ASSETS):
+        if not f.endswith(".svg") or f == keep:
+            continue
+        # 删掉同名旧版本，以及早期不带日期的 base.svg
+        if f.startswith(base + "-") or f == base + ".svg":
+            os.remove(os.path.join(ASSETS, f))
+    return path
+
+
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
@@ -93,8 +112,8 @@ def chart_rank_stack(rows):
     H = TOP + ROW * len(rows) + 74
     b = []
     b.append(txt(24, 34, "标普 500 标的量化打分排名", 19, INK, bold=True))
-    b.append(txt(24, 56, "五维加权，满分 100 ｜ 前四名全部是场内 ETF，与场外存在约 26 分断层",
-                 12.5, INK2))
+    b.append(txt(24, 56, "五维加权，满分 100 ｜ 数据截至 %s ｜ 前四名全部是场内 ETF，"
+                         "与场外存在约 16 分断层" % ASOF, 12.5, INK2))
     # 图例
     lx = 24
     for name, full, col in DIMS:
@@ -134,8 +153,7 @@ def chart_rank_stack(rows):
     b.append(txt(LEFT + plot_w / 2, y0 + 34, "总分（五维加权）", 11.5, INK3, anchor="middle"))
     b.append(txt(24, y0 + 62, "注：各维度用组内 min-max 归一化——该维度最好的得满分、最差的得 0 分；"
                               "所以 0 分只代表「在这 10 只里最差」，不代表绝对差。", 11, INK3))
-    open(os.path.join(ASSETS, "rank_score.svg"), "w", encoding="utf-8").write(
-        svg(W, H, "".join(b), "标普500标的量化打分排名"))
+    save("rank_score.svg", svg(W, H, "".join(b), "标普500标的量化打分排名"))
     return W, H
 
 
@@ -159,8 +177,8 @@ def chart_bump(rows):
     rho = 1 - 6 * d2 / (n * (n * n - 1))
 
     b = [txt(24, 34, "低费率 ≠ 好结果：费率排名与三年收益排名对照", 19, INK, bold=True),
-         txt(24, 56, "左边按加权综合费率从低到高排，右边按过去三年收益从高到低排，连线越斜说明错位越大。",
-             12.5, INK2),
+         txt(24, 56, "左边按加权综合费率从低到高排，右边按近三年收益从高到低排，连线越斜说明错位越大"
+                     "（数据截至 %s）" % ASOF, 12.5, INK2),
          txt(24, 80, "Spearman 秩相关 ρ = %.2f —— 两者只有弱相关，费率低并不能保证收益高。" % rho,
              12.5, "#b45309", bold=True)]
 
@@ -198,8 +216,7 @@ def chart_bump(rows):
                              "说明场内 ETF 同时占据了「费率低」和「收益高」两端。", 11.5, INK3))
     b.append(txt(24, H - 14, "ρ 的算法：ρ = 1 − 6Σd² / (n(n²−1))，d 为同一只基金两侧的名次差；"
                              "ρ = 1 表示完全一致，0 表示完全无关。", 11, INK3))
-    open(os.path.join(ASSETS, "rank_bump.svg"), "w", encoding="utf-8").write(
-        svg(W, H, "".join(b), "费率排名与收益排名对照"))
+    save("rank_bump.svg", svg(W, H, "".join(b), "费率排名与收益排名对照"))
     return W, H
 
 
@@ -237,8 +254,7 @@ def chart_exposure(rows):
     y0 = TOP + ROW * len(rows)
     b.append(txt(24, y0 + 46, "参与率 = (权益 + 目标基金 × 目标ETF参与率 + 股指期货合约市值) ÷ 期末净资产。"
                               "差出来的部分是现金与应收款，涨的时候就是少赚的钱。", 11, INK3))
-    open(os.path.join(ASSETS, "exposure.svg"), "w", encoding="utf-8").write(
-        svg(W, H, "".join(b), "穿透后参与率"))
+    save("exposure.svg", svg(W, H, "".join(b), "穿透后参与率"))
     return W, H
 
 
@@ -273,8 +289,7 @@ def chart_returns(rows):
     y0 = TOP + ROW * len(rows)
     b.append(txt(24, y0 + 30, "每列各自按 min-max 缩放，只用于看相对位置，不要跨列比较长度。",
                  11, INK3))
-    open(os.path.join(ASSETS, "returns.svg"), "w", encoding="utf-8").write(
-        svg(W, H, "".join(b), "多期收益对比"))
+    save("returns.svg", svg(W, H, "".join(b), "多期收益对比"))
     return W, H
 
 
@@ -308,8 +323,7 @@ def chart_premium(rows):
     b.append(txt(L + pw / 2, T + ph + 40, "%s 溢价率" % ASOF, 12, INK2, anchor="middle"))
     b.append(txt(24, H - 14, "口径提醒：QDII 净值有 T+1 披露时滞，同日「收盘价 ÷ 净值」会把隔夜美股涨跌"
                              "算进溢价。严谨计算应用「价格(T) ÷ 净值(T-1)」，两个口径都要看。", 11, INK3))
-    open(os.path.join(ASSETS, "premium.svg"), "w", encoding="utf-8").write(
-        svg(W, H, "".join(b), "场内溢价"))
+    save("premium.svg", svg(W, H, "".join(b), "场内溢价"))
     return W, H
 
 
@@ -322,9 +336,10 @@ def main():
               ("returns.svg", chart_returns(rows)),
               ("premium.svg", chart_premium(rows))]
     for f, (w, h) in charts:
-        p = os.path.join(ASSETS, f)
-        print("  %-26s %4d x %-4d %6.1f KB" % (f, w, h, os.path.getsize(p) / 1024))
-    print("saved -> assets/*.svg  (%d charts)" % len(charts))
+        real = f[:-4] + "-" + ASOF + ".svg"
+        p = os.path.join(ASSETS, real)
+        print("  %-30s %4d x %-4d %6.1f KB" % (real, w, h, os.path.getsize(p) / 1024))
+    print("saved -> assets/*-%s.svg  (%d charts)" % (ASOF, len(charts)))
 
 
 if __name__ == "__main__":
