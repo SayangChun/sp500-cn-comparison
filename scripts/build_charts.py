@@ -24,6 +24,7 @@ FONT = ("-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',"
         "'Hiragino Sans GB','Microsoft YaHei',sans-serif")
 MONO = "ui-monospace,SFMono-Regular,Consolas,monospace"
 
+ASOF = "2026-10-22"
 BG = "#fbfcfe"
 INK = "#1a1d21"
 INK2 = "#5b636d"
@@ -251,9 +252,8 @@ def chart_returns(rows):
     ROW = 26
     TOP = 92
     H = TOP + ROW * len(rows) + 60
-    b = [txt(24, 34, "多期净值增长率：场内与场外的差距随持有期拉长而放大", 19, INK, bold=True),
-         txt(24, 56, "同一指数、同一区间、同一币种，净值增长率可直接横比。"
-                     "半年差 1.35 个百分点，三年差到 10.9 个百分点。", 12.5, INK2)]
+    b = [txt(24, 34, "多期净值增长率（截至 %s）：场内与场外的差距随持有期拉长而放大" % ASOF, 19, INK, bold=True),
+         txt(24, 56, "同一指数、同一区间、同一币种，净值增长率可直接横比。窗口按最新交易日滚动，不是中报的固定区间。", 12.5, INK2)]
     for pi, (name, key, _y) in enumerate(PANELS):
         px = 24 + pi * COLW
         vals = [(r[key] or 0) for r in rows]
@@ -285,26 +285,27 @@ def chart_premium(rows):
     etfs = sorted([r for r in rows if r.get("premium") is not None],
                   key=lambda r: -r["premium"])
     W, H = 940, 400
-    L, R, T, B = 92, 40, 88, 96
+    L, R, T, B = 92, 250, 88, 96
     pw, ph = W - L - R, H - T - B
-    b = [txt(24, 34, "场内 ETF 期末溢价：买场内要多付这笔钱", 19, INK, bold=True),
-         txt(24, 56, "溢价 = 收盘价 ÷ 份额净值 − 1。溢价越高，同样的钱买到的指数敞口越少。", 12.5, INK2)]
-    hi = max(r["premium"] for r in etfs) + 1
+    b = [txt(24, 34, "场内 ETF 溢价：买场内要多付这笔钱", 19, INK, bold=True),
+         txt(24, 56, "溢价 = 收盘价 ÷ 单位净值 − 1，取 %s。溢价越高，同样的钱买到的指数敞口越少。"
+             % ASOF, 12.5, INK2)]
+    hi = max(r["premium"] for r in etfs) * 1.04
     X = lambda v: L + v / hi * pw
-    Y = lambda i: T + i * (ph / len(etfs))
     bh = ph / len(etfs) - 16
     for i, r in enumerate(etfs):
-        y = Y(i)
+        y = T + i * (ph / len(etfs))
         b.append(txt(L - 12, y + bh / 2 + 4, r["short"], 12.5, INK, anchor="end", bold=True))
         b.append(rect(L, y, X(r["premium"]) - L, bh, C_ETF, 3))
-        b.append(txt(X(r["premium"]) + 9, y + bh / 2 + 5,
-                     "%.2f%%　→ 有效参与率 %.2f%%" % (r["premium"], r["premium_adj"]),
-                     11.5, INK, bold=True))
+        b.append(txt(X(r["premium"]) - 10, y + bh / 2 + 4.5, "%.2f%%" % r["premium"],
+                     11.5, "#ffffff", anchor="end", bold=True))
+        b.append(txt(L + pw + 18, y + bh / 2 + 4.5,
+                     "有效参与率 %.2f%%" % r["premium_adj"], 11.5, INK, bold=True))
     for v in range(0, int(hi) + 1, 1):
         b.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="%s" stroke-width="1"/>'
                  % (X(v), T, X(v), T + ph, GRID))
         b.append(txt(X(v), T + ph + 17, "%d%%" % v, 10.5, INK3, anchor="middle"))
-    b.append(txt(L + pw / 2, T + ph + 40, "2026-06-30 期末溢价率", 12, INK2, anchor="middle"))
+    b.append(txt(L + pw / 2, T + ph + 40, "%s 溢价率" % ASOF, 12, INK2, anchor="middle"))
     b.append(txt(24, H - 14, "口径提醒：QDII 净值有 T+1 披露时滞，同日「收盘价 ÷ 净值」会把隔夜美股涨跌"
                              "算进溢价。严谨计算应用「价格(T) ÷ 净值(T-1)」，两个口径都要看。", 11, INK3))
     open(os.path.join(ASSETS, "premium.svg"), "w", encoding="utf-8").write(
