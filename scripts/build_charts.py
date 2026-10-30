@@ -24,7 +24,7 @@ FONT = ("-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',"
         "'Hiragino Sans GB','Microsoft YaHei',sans-serif")
 MONO = "ui-monospace,SFMono-Regular,Consolas,monospace"
 
-ASOF = "2026-10-22"
+ASOF = "2026-09-30"
 BG = "#fbfcfe"
 INK = "#1a1d21"
 INK2 = "#5b636d"
@@ -113,7 +113,7 @@ def chart_rank_stack(rows):
     b = []
     b.append(txt(24, 34, "标普 500 标的量化打分排名", 19, INK, bold=True))
     b.append(txt(24, 56, "五维加权，满分 100 ｜ 数据截至 %s ｜ 前四名全部是场内 ETF，"
-                         "与场外存在约 16 分断层" % ASOF, 12.5, INK2))
+                         "与场外存在约 23 分断层" % ASOF, 12.5, INK2))
     # 图例
     lx = 24
     for name, full, col in DIMS:
