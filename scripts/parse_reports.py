@@ -213,7 +213,8 @@ def parse_futures(s):
             "_raw": flat(blk[:600])}
 
 
-CLASS_TAIL = re.compile(r"阶段\s*份额净值")
+# 中报写「阶段份额净值增长率」，季报写「阶段净值增长率」——份额二字可有可无
+CLASS_TAIL = re.compile(r"阶段\s*(?:份额)?净值")
 
 
 def clean_label(label):
