@@ -112,6 +112,21 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 .mini{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
 .mini .t{font-weight:650;font-size:13.5px;margin-bottom:3px}
 .mini .s{font-size:12.5px;color:var(--ink3)}
+.pf-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;margin-bottom:14px}
+.pf-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  flex-wrap:wrap;margin-bottom:10px}
+.pf-head .nm{font-size:15px;font-weight:650}
+.pf-head .sc{font-size:12.5px;color:var(--ink3)}
+.pf-line{font-size:13px;color:var(--ink2);line-height:1.75;margin:5px 0}
+.pf-line b{color:var(--ink);font-weight:600}
+.pf-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:10px}
+.pf-box{border-radius:7px;padding:9px 11px;font-size:12.5px;line-height:1.65}
+.pf-box.pro{background:var(--green-bg);color:#0f5f57}
+.pf-box.con{background:var(--red-bg);color:#8c3125}
+.pf-box ul{margin:4px 0 0;padding-left:18px}
+.pf-one{background:var(--blue-bg);border-left:3px solid var(--blue);padding:8px 12px;
+  border-radius:5px;font-size:13px;color:#1e3a8a;margin-top:10px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -119,7 +134,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 
 <div class="hero">
   <p class="sub">结构与收益来自 <b>2026 年三季报</b>（截至 <b>2026-09-30</b>）·
-  费率沿用中报 · 溢价取 9-30 收盘价 · 报告更新于 <b>2026-10-30</b></p>
+  费率沿用中报 · 溢价取 9-30 收盘价 · 深度剖析更新于 <b>2026-11-16</b></p>
   <h1>中国境内跟踪标普 500 的标的：谁真的拿到了指数那部分钱？</h1>
   <p class="lede">同样跟踪标普 500，2026 上半年场外收益从 <b>5.55%</b> 到 <b>6.90%</b>，相差 1.35 个百分点。
   差异不来自"选股能力"，而来自三件事：<b>实际参与率</b>、<b>加权综合费率</b>、<b>场内溢价</b>。</p>
@@ -181,6 +196,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 
 <div class="tabs">
   <button class="tab on" data-t="p8">本次更新（截至 10-22）</button>
+  <button class="tab" data-t="p9">逐只深度剖析</button>
   <button class="tab" data-t="p7">推荐排名（量化打分）</button>
   <button class="tab" data-t="p1">参与率与费率</button>
   <button class="tab" data-t="p2">收益与跟踪缺口</button>
@@ -258,6 +274,10 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
     （过去三个月/六个月/一年/三年），口径与报告一致；溢价 = 2026-09-30 收盘价 ÷ 单位净值；
     费率沿用中报（季报无费率附注）。10 只产品的 9-30 单位净值已与季报「期末基金份额净值」核对一致。
   </div>
+</div>
+
+<div class="panel" id="p9">
+__PROFILE_PANEL__
 </div>
 
 <div class="panel" id="p7">
@@ -551,6 +571,82 @@ def chip(kind):
 def bar(v, lo, hi, cls=""):
     p = 0 if hi == lo else max(0, min(100, (v - lo) / (hi - lo) * 100))
     return ('<div class="bar %s"><i style="width:%.1f%%"></i></div>' % (cls, p))
+
+
+def build_profile_panel():
+    """渲染 data/fund_profiles.json 成「逐只深度剖析」页签。"""
+    pf = json.load(open(os.path.join(ROOT, "data", "fund_profiles.json"), encoding="utf-8"))
+    funds = pf["funds"]
+    h = []
+    h.append('<div class="note blue"><b>前面的页签回答「哪只分数高」，这一页回答「分数是怎么来的」。</b>'
+             '每只基金从经理、操作、追踪纯度、成本让利、规模流动性、溢价、对持有人态度 8 个维度穿透。'
+             '事实来自 2025 年报与 2026 三季报，判断单独标注。数据基准日 2026-09-30，深度剖析更新于 2026-11-16。</div>')
+
+    h.append('<h3>五个被表面数字掩盖的发现</h3>')
+    h.append('<div class="note gray"><b>1. 参与率最低的摩根 A，跟踪精度其实排第二。</b>'
+             '摩根参与率 94.03% 垫底，但相对自己基准年度偏离仅 -0.13pp；博时 ETF 参与率 99.77% 却偏离 -0.93pp'
+             '（因其基准是含息 NTR，口径最严）。参与率衡量「钱进场没有」，偏离衡量「跟得准不准」，是两件事。</div>')
+    h.append('<div class="note gray"><b>2. 长期差距来自结构，不是操作。</b>'
+             '天弘 FOF 参与率 95.19% 场外最高，但持别人家 ETF 无法豁免费用，双重收费致三年收益垫底；'
+             '易方达 LOF 实测跟踪误差 0.14% 全场最扎实，却因 1.00% 最高费率被拖累。</div>')
+    h.append('<div class="note gray"><b>3. 经理稳定性不等于业绩，但决定「谁在盯」。</b>'
+             '博时万琼 11 年、天弘胡超 7 年零变更；南方 2025 年原经理离任、增聘两位（含三个月共管期）、'
+             '易方达 2025 年老将换新人。'
+             '国泰艾小军同时管 17+ 只、国泰联接苗梦羽管 15+ 只，是精细化管理现实约束。</div>')
+    h.append('<div class="note gray"><b>4. 主动降费的只有两家。</b>'
+             '博时（ETF + 联接）2025-01-27、天弘 FOF 2025-02-13 均把托管费从 0.25% 降到 0.20%；'
+             '其余八只无降费记录。这是真金白银的让利。</div>')
+    h.append('<div class="note"><b>5. 溢价是基金控制不了、但你必须付的成本。</b>'
+             '9-30 四只 ETF 溢价 7.72%–10.21%，博时最高；国泰已暂停申购，溢价无法通过套利抹平。'
+             '基金再好，按 10% 溢价买入也等于先亏近一成。</div>')
+
+    h.append('<h3>逐只拆解（按综合排名）</h3>')
+    for i, f in enumerate(funds, 1):
+        m, op, pu, co, sc, pr, at, ve = (
+            f["manager"], f["operation"], f["purity"], f["cost"],
+            f["scale"], f["premium"], f["attitude"], f["verdict"])
+        h.append('<div class="pf-card">')
+        h.append('<div class="pf-head"><span class="nm">%d. %s <span class="code">%s</span></span>'
+                 '<span class="sc">综合第 %d 名 · %.2f 分 · %s</span></div>'
+                 % (i, f["short"], f["code"], f["rank"], f["score"], f["kind"]))
+        h.append('<div class="pf-line"><b>经理</b>　%s ｜ 任职 %s（%.1f 年）｜ 从业 %s ｜ %s</div>'
+                 % (m.get("name", "—"), m.get("since", "—"), m.get("tenure_y", 0),
+                    m.get("experience_y", "—"), m.get("role", "—")))
+        h.append('<div class="pf-line"><b>变动</b>　%s</div>' % m.get("change_note", "—"))
+        h.append('<div class="pf-line"><b>在管</b>　%s</div>' % m.get("concurrent", "—"))
+        h.append('<div class="pf-line"><b>判断</b>　%s</div>' % m.get("assessment", "—"))
+        h.append('<div class="pf-line"><b>操作</b>　%s；%s</div>'
+                 % (op.get("replication", "—"), op.get("futures", "—")))
+        if op.get("securities_lending"):
+            h.append('<div class="pf-line"><b>出借</b>　%s</div>' % op["securities_lending"])
+        if op.get("cash_drag"):
+            h.append('<div class="pf-line"><b>现金</b>　%s</div>' % op["cash_drag"])
+        h.append('<div class="pf-line"><b>纯度</b>　%s ｜ %s</div>'
+                 % (pu.get("participation", "—"), pu.get("bench_kind", "—")))
+        h.append('<div class="pf-line"><b>偏离</b>　%s；%s</div>'
+                 % (pu.get("bench_2025", "—"), pu.get("gap_3y", "—")))
+        h.append('<div class="pf-line"><b>判断</b>　%s</div>' % pu.get("assessment", "—"))
+        h.append('<div class="pf-line"><b>成本</b>　管理 %.2f%% + 托管 %.2f%% = 综合 %.2f%%%s</div>'
+                 % (co.get("mgmt", 0), co.get("cust", 0), co.get("total", 0),
+                    ("；" + co["fee_cut"]) if co.get("fee_cut") else ""))
+        h.append('<div class="pf-line"><b>规模</b>　%s 亿（%s）｜ %s</div>'
+                 % (sc.get("nav_yi", "—"), sc.get("asof", "—"), sc.get("note", "—")))
+        prem = pr.get("note") or "无显著溢价"
+        if pr.get("p_0930"):
+            prem += "（6/30 %+.2f%% → 9/30 %+.2f%% → 10/22 %+.2f%%）" % (
+                pr["p_0630"], pr["p_0930"], pr["p_1022"])
+        h.append('<div class="pf-line"><b>溢价</b>　%s</div>' % prem)
+        h.append('<div class="pf-line"><b>态度</b>　%s</div>' % at.get("assessment", "—"))
+        h.append('<div class="pf-line"><b>分红/降费/申购</b>　%s ｜ %s ｜ %s</div>'
+                 % (at.get("dividend", "—"), at.get("fee_cut", "—"), at.get("subscribe", "—")))
+        pros = "".join("<li>%s</li>" % x for x in ve.get("pros", []))
+        cons = "".join("<li>%s</li>" % x for x in ve.get("cons", []))
+        h.append('<div class="pf-two"><div class="pf-box pro"><b>优势</b><ul>%s</ul></div>'
+                 '<div class="pf-box con"><b>短板</b><ul>%s</ul></div></div>' % (pros, cons))
+        h.append('<div class="pf-one"><b>综合判断：</b>%s<br><b>适合</b>：%s ｜ <b>不适合</b>：%s</div>'
+                 % (ve.get("one", ""), ve.get("fit", "—"), ve.get("unfit", "—")))
+        h.append('</div>')
+    return "\n".join(h)
 
 
 def main():
@@ -920,7 +1016,8 @@ def main():
             .replace("__ROWS_P4__", "".join(r4))
             .replace("__ROWS_P5__", "".join(r5))
             .replace("__RAW_BLOCKS__", "".join(blocks))
-            .replace("__GEN__", "2026-10-30"))
+            .replace("__PROFILE_PANEL__", build_profile_panel())
+            .replace("__GEN__", "2026-11-16"))
     out = os.path.join(ROOT, "index.html")
     open(out, "w", encoding="utf-8").write(html)
     print("saved -> index.html  (%.1f KB)" % (len(html.encode("utf-8")) / 1024))
